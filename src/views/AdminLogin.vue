@@ -2,7 +2,9 @@
   <div class="min-h-screen w-full flex items-center justify-center bg-secondary px-4 text-center">
     <div class="w-full max-w-sm">
       <div class="mb-8 flex flex-col items-center gap-3 text-center">
-        <div class="logo-float flex h-20 w-20 items-center justify-center rounded-full bg-accent shadow-md">
+        <div
+          class="logo-float flex h-20 w-20 items-center justify-center rounded-full bg-accent shadow-md"
+        >
           <span class="font-display text-2xl font-bold text-primary">BB</span>
         </div>
         <h1 class="font-display text-3xl font-bold tracking-wide text-foreground text-center">
@@ -12,7 +14,10 @@
           Ingresa tus credenciales para continuar
         </p>
       </div>
-      <form @submit.prevent="handleSubmit" class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <form
+        @submit.prevent="handleSubmit"
+        class="rounded-2xl border border-border bg-card p-6 shadow-sm"
+      >
         <div class="flex flex-col gap-5">
           <div class="flex flex-col gap-2">
             <label for="nombre" class="text-sm font-medium text-foreground">Usuario</label>
@@ -29,7 +34,7 @@
           </div>
           <div class="flex flex-col gap-2">
             <label for="password" class="text-sm font-medium text-foreground">Contraseña</label>
-            <div class="relative">
+            <div class="relative flex items-center">
               <input
                 id="password"
                 :type="showPassword ? 'text' : 'password'"
@@ -37,12 +42,12 @@
                 v-model="contraseña"
                 required
                 autocomplete="current-password"
-                class="h-11 rounded-xl bg-secondary/50 pr-10 px-3"
+                class="h-11 w-full rounded-xl bg-secondary/50 pr-12 pl-3 text-base"
               />
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
+                class="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-lg text-muted-foreground transition hover:text-foreground"
                 :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
               >
                 <span v-if="showPassword">🙈</span>
@@ -91,7 +96,7 @@ async function handleSubmit() {
     loading.value = false
     router.push({ path: '/admin' })
   } catch (err: any) {
-    error.value = (err && err.message) ? err.message : 'Error al iniciar sesión'
+    error.value = err && err.message ? err.message : 'Error al iniciar sesión'
     loading.value = false
   }
 }
@@ -102,8 +107,13 @@ async function handleSubmit() {
   animation: logoFloat 4s ease-in-out infinite;
 }
 @keyframes logoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 .min-h-screen.w-full.flex.items-center.justify-center.bg-secondary.px-4.text-center {
   min-height: 100vh;
@@ -129,14 +139,15 @@ form.rounded-2xl {
   box-shadow: none;
   padding: 0;
 }
-input[type="text"], input[type="password"] {
+input[type='text'],
+input[type='password'] {
   font-size: 1rem;
   border-radius: 1rem;
   border: 1px solid var(--border, #eee);
   padding: 0.75rem 1rem;
   background: var(--secondary, #f6f6f6);
 }
-button[type="submit"] {
+button[type='submit'] {
   margin-top: 0.5rem;
 }
 </style>
