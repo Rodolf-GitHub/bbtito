@@ -6,7 +6,9 @@
     <div
       class="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 w-full max-w-xl max-h-[92vh] overflow-y-auto relative border border-border/60"
     >
-      <div class="absolute inset-x-6 top-0 h-1.5 rounded-b-full bg-gradient-to-r from-primary via-pink-400 to-orange-300" />
+      <div
+        class="absolute inset-x-6 top-0 h-1.5 rounded-b-full bg-gradient-to-r from-primary via-pink-400 to-orange-300"
+      />
       <button
         class="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 shadow-sm transition"
         @click="$emit('close')"
