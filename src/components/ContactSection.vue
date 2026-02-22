@@ -1,29 +1,34 @@
 <template>
-  <section class="mx-auto max-w-6xl pb-20 px-6">
-    <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-2 text-[11px] uppercase tracking-widest text-primary">
-          <span>Contacto</span>
-        </div>
-        <h2 class="font-display text-2xl text-foreground sm:text-3xl text-balance">
+  <section class="mx-auto max-w-5xl pb-20 px-6">
+    <div
+      class="rounded-3xl border border-border bg-gradient-to-b from-card to-secondary/60 p-8 shadow-sm"
+    >
+      <div class="text-center max-w-3xl mx-auto mb-8 flex flex-col gap-3">
+        <span
+          class="inline-flex items-center justify-center gap-2 text-[11px] uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full"
+        >
+          Contacto
+        </span>
+        <h2 class="font-display text-3xl text-foreground sm:text-4xl text-balance">
           Escríbenos para separar tu prenda
         </h2>
-        <p class="text-sm text-muted-foreground leading-relaxed">
-          Nuestro catálogo va variando y lo actualizamos cada semana. Escríbenos para mantenerte al
-          tanto y enviarte el detalle de la prenda que te interesa.
+        <p class="text-sm sm:text-base text-muted-foreground leading-relaxed">
+          Nuestro catálogo cambia cada semana. Déjanos un mensaje y te mantenemos al tanto con el
+          detalle de la prenda que te interesa.
         </p>
       </div>
-      <div class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6">
-        <div>
-          <p
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6 shadow-xs">
+          <div
             class="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground"
           >
+            <span class="h-2 w-2 rounded-full bg-primary"></span>
             WhatsApp
-          </p>
-          <div class="mt-3 flex flex-col gap-2">
+          </div>
+          <div class="mt-2 flex flex-col gap-2">
             <a
               v-for="contacto in contactos"
-              class="flex items-center justify-between rounded-xl border border-border px-4 py-3 transition hover:border-primary hover:bg-accent/30"
+              class="flex items-center justify-between rounded-xl border border-border px-4 py-3 transition hover:border-primary hover:bg-accent/40"
               :href="buildWhatsappLink(contacto.wa)"
               target="_blank"
               rel="noopener noreferrer"
@@ -33,27 +38,33 @@
                 <p class="text-sm text-muted-foreground">{{ contacto.numero }}</p>
               </div>
               <div
-                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#25d366] text-primary-foreground"
+                class="flex h-9 w-9 items-center justify-center rounded-full bg-[#25d366] text-primary-foreground shadow"
               >
-                <IconWhatsapp class="h-6 w-6" />
+                <IconWhatsapp class="h-5 w-5" />
               </div>
             </a>
           </div>
         </div>
-        <div class="flex flex-wrap gap-6 border-t border-border pt-4">
-          <div class="flex items-start gap-2">
-            <Clock class="mt-0.5 h-4 w-4 text-muted-foreground" />
+        <div class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-xs">
+          <div class="flex items-start gap-3">
+            <Clock class="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
               <p class="text-xs uppercase tracking-widest text-muted-foreground">Horario</p>
-              <p class="text-sm text-foreground">Lun - Sab, 9:00 a 19:00</p>
+              <p class="text-sm text-foreground">Lun - Sab, 9:00 a 22:00</p>
             </div>
           </div>
-          <div class="flex items-start gap-2">
-            <MapPin class="mt-0.5 h-4 w-4 text-muted-foreground" />
+          <div class="flex items-start gap-3">
+            <MapPin class="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
               <p class="text-xs uppercase tracking-widest text-muted-foreground">Ubicación</p>
               <p class="text-sm text-foreground">Montevideo, Uruguay</p>
             </div>
+          </div>
+          <div
+            class="rounded-xl border border-dashed border-border bg-secondary/40 p-4 text-left text-sm text-muted-foreground"
+          >
+            Siempre respondemos en horario laboral. Déjanos tu mensaje y el producto que te
+            interesa, y te compartimos fotos y detalles.
           </div>
         </div>
       </div>
