@@ -9,7 +9,7 @@
         :alt="producto.nombre"
         class="h-full w-full cursor-pointer object-cover transition duration-500 group-hover:scale-105"
         loading="lazy"
-        @click="goToDetail"
+        @click="onImageClick"
       />
       <div
         v-else
@@ -74,7 +74,13 @@ const props = defineProps({
     required: true,
     default: () => ({}),
   },
+  navigateOnClick: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
 })
+const emit = defineEmits(['imageClick', 'consultar'])
 const imgSrc = computed(() =>
   props.producto && props.producto.imagen ? buildImageUrl(props.producto.imagen) : '',
 )
@@ -88,6 +94,15 @@ const router = useRouter()
 function goToDetail() {
   if (!props.producto?.id) return
   router.push({ path: `/producto/${props.producto.id}` })
+}
+
+function onImageClick() {
+  if (!imgSrc.value) return
+  if (props.navigateOnClick) {
+    goToDetail()
+  } else {
+    emit('imageClick', imgSrc.value, props.producto?.nombre || '')
+  }
 }
 
 function copyFallback(url: string) {

@@ -63,6 +63,7 @@
             v-for="(producto, index) in productos"
             :key="producto.id ?? index"
             :producto="producto"
+            :navigateOnClick="false"
             @imageClick="openLightbox"
             @consultar="onConsultar"
           />
