@@ -160,9 +160,13 @@ async function onSave(product: any) {
         },
         ...(imagenBlob ? { imagen: imagenBlob } : {}),
       }
-      await productosApiCreateProducto(body, {
+      const res: any = await productosApiCreateProducto(body, {
         headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
       })
+      if (res?.status === 401) {
+        window.location.href = '/admin/login'
+        return
+      }
     } else {
       const body: ProductosApiUpdateProductoBody = {
         data: {
@@ -173,13 +177,21 @@ async function onSave(product: any) {
         },
         ...(imagenBlob ? { imagen: imagenBlob } : {}),
       }
-      await productosApiUpdateProducto(selectedProduct.value.id, body, {
+      const res: any = await productosApiUpdateProducto(selectedProduct.value.id, body, {
         headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
       })
+      if (res?.status === 401) {
+        window.location.href = '/admin/login'
+        return
+      }
     }
     closeModal()
     await fetchData()
   } catch (e) {
+    if ((e as any)?.status === 401) {
+      window.location.href = '/admin/login'
+      return
+    }
     error.value = true
     console.error('Error al crear producto:', e)
   } finally {
@@ -194,7 +206,13 @@ function onDelete(product: any) {
   productosApiDeleteProducto(product.id, {
     headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
   })
-    .then(() => fetchData())
+    .then((res: any) => {
+      if (res?.status === 401) {
+        window.location.href = '/admin/login'
+        return
+      }
+      fetchData()
+    })
     .catch(() => {
       error.value = true
     })
@@ -300,6 +318,10 @@ async function fetchData() {
     totalMujer.value = items.filter((p: any) => p.para_mujer).length
     totalHombre.value = items.filter((p: any) => !p.para_mujer).length
   } catch (e) {
+    if ((e as any)?.status === 401) {
+      window.location.href = '/admin/login'
+      return
+    }
     error.value = true
   } finally {
     isLoading.value = false
