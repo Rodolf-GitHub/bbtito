@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col justify-center w-full bg-secondary">
+    <NotificationToast />
     <div class="mx-auto w-full py-8 px-2 sm:px-6 lg:px-24 gap-6 flex flex-col">
       <div class="flex flex-col items-center text-center gap-3 mb-4">
         <a
@@ -124,6 +125,8 @@ import ProductTable from '../components/admin/ProductTable.vue'
 import StatCard from '../components/admin/StatCard.vue'
 import ProductModal from '../components/admin/ProductModal.vue'
 import ImageLightbox from '../components/ImageLightbox.vue'
+import NotificationToast from '../components/NotificationToast.vue'
+import useNotification from '../composables/useNotification'
 // Modal state
 const modalOpen = ref(false)
 const selectedProduct = ref<any | null>(null)
@@ -143,6 +146,8 @@ function closeModal() {
   selectedProduct.value = null
   modalSaving.value = false
 }
+const { show } = useNotification()
+
 async function onSave(product: any) {
   console.log('onSave ejecutado', product)
   isLoading.value = true
@@ -184,6 +189,11 @@ async function onSave(product: any) {
         window.location.href = '/admin/login'
         return
       }
+      if (res?.status && res.status >= 400) {
+        const errorMsg = (res?.data && (res.data as any).error) || 'Error al crear producto'
+        show(errorMsg, 'error')
+        return
+      }
     } else {
       const body: ProductosApiUpdateProductoBody = {
         data: {
@@ -201,6 +211,11 @@ async function onSave(product: any) {
         window.location.href = '/admin/login'
         return
       }
+      if (res?.status && res.status >= 400) {
+        const errorMsg = (res?.data && (res.data as any).error) || 'Error al actualizar producto'
+        show(errorMsg, 'error')
+        return
+      }
     }
     closeModal()
     await fetchData()
@@ -210,6 +225,8 @@ async function onSave(product: any) {
       return
     }
     error.value = true
+    const errMsg = (e as any)?.message || 'Error inesperado'
+    show(errMsg, 'error')
     console.error('Error al crear producto:', e)
   } finally {
     isLoading.value = false
@@ -229,6 +246,12 @@ function onDelete(product: any) {
         window.location.href = '/admin/login'
         return
       }
+      if (res?.status && res.status >= 400) {
+        const errorMsg = (res?.data && (res.data as any).error) || 'Error al eliminar producto'
+        show(errorMsg, 'error')
+        return
+      }
+      show('Producto eliminado', 'success')
       fetchData()
     })
     .catch(() => {
