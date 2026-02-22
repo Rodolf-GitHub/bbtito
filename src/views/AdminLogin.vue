@@ -3,9 +3,9 @@
     <div class="w-full max-w-sm">
       <div class="mb-8 flex flex-col items-center gap-3 text-center">
         <div
-          class="logo-float flex h-20 w-20 items-center justify-center rounded-full bg-accent shadow-md"
+          class="logo-float flex h-20 w-20 items-center justify-center rounded-full bg-accent shadow-md overflow-hidden"
         >
-          <span class="font-display text-2xl font-bold text-primary">BB</span>
+          <img src="/bbtito_logo.png" alt="BBTito Logo" class="h-full w-full object-contain" />
         </div>
         <h1 class="font-display text-3xl font-bold tracking-wide text-foreground text-center">
           BBTito Admin
@@ -78,6 +78,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import IconBbtito from '../components/icons/IconBbtito.vue'
 
 const router = useRouter()
 const nombre = ref('')
