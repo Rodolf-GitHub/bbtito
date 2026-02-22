@@ -17,8 +17,11 @@ import type {
   ProductosApiListProductosParaMujerParams,
   ProductosApiListProductosParams,
   ProductosApiUpdateProductoBody,
-  TokenSchema
-} from './schemas';
+  TokenSchema,
+} from './schemas'
+import { API_BASE } from '../api'
+
+const withBase = (path: string) => (path.startsWith('http') ? path : `${API_BASE}${path}`)
 
 /**
  * Endpoint para listar todos los productos, con soporte de búsqueda por nombre.
@@ -29,46 +32,41 @@ export type productosApiListProductosResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosResponseSuccess = (productosApiListProductosResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosResponseSuccess = productosApiListProductosResponse200 & {
+  headers: Headers
+}
+export type productosApiListProductosResponse = productosApiListProductosResponseSuccess
 
-export type productosApiListProductosResponse = (productosApiListProductosResponseSuccess)
-
-export const getProductosApiListProductosUrl = (params?: ProductosApiListProductosParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosUrl = (params?: ProductosApiListProductosParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/listar_todos?${stringifiedParams}` : `/api/productos/listar_todos`
+  return stringifiedParams.length > 0
+    ? `/api/productos/listar_todos?${stringifiedParams}`
+    : `/api/productos/listar_todos`
 }
 
-export const productosApiListProductos = async (params?: ProductosApiListProductosParams, options?: RequestInit): Promise<productosApiListProductosResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosUrl(params),
-  {      
+export const productosApiListProductos = async (
+  params?: ProductosApiListProductosParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiListProductosResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as productosApiListProductosResponse
 }
-  
-
 
 /**
  * Endpoint para listar todos los productos en oferta, con soporte de búsqueda por nombre.
@@ -79,46 +77,49 @@ export type productosApiListProductosOfertasResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosOfertasResponseSuccess = (productosApiListProductosOfertasResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosOfertasResponseSuccess =
+  productosApiListProductosOfertasResponse200 & {
+    headers: Headers
+  }
+export type productosApiListProductosOfertasResponse =
+  productosApiListProductosOfertasResponseSuccess
 
-export type productosApiListProductosOfertasResponse = (productosApiListProductosOfertasResponseSuccess)
-
-export const getProductosApiListProductosOfertasUrl = (params?: ProductosApiListProductosOfertasParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosOfertasUrl = (
+  params?: ProductosApiListProductosOfertasParams,
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/listar_ofertas?${stringifiedParams}` : `/api/productos/listar_ofertas`
+  return stringifiedParams.length > 0
+    ? `/api/productos/listar_ofertas?${stringifiedParams}`
+    : `/api/productos/listar_ofertas`
 }
 
-export const productosApiListProductosOfertas = async (params?: ProductosApiListProductosOfertasParams, options?: RequestInit): Promise<productosApiListProductosOfertasResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosOfertasUrl(params),
-  {      
+export const productosApiListProductosOfertas = async (
+  params?: ProductosApiListProductosOfertasParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosOfertasResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosOfertasUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiListProductosOfertasResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as productosApiListProductosOfertasResponse
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as productosApiListProductosOfertasResponse
 }
-  
-
 
 /**
  * Endpoint para listar todos los productos para mujer, con soporte de búsqueda por nombre.
@@ -129,46 +130,49 @@ export type productosApiListProductosParaMujerResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosParaMujerResponseSuccess = (productosApiListProductosParaMujerResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosParaMujerResponseSuccess =
+  productosApiListProductosParaMujerResponse200 & {
+    headers: Headers
+  }
+export type productosApiListProductosParaMujerResponse =
+  productosApiListProductosParaMujerResponseSuccess
 
-export type productosApiListProductosParaMujerResponse = (productosApiListProductosParaMujerResponseSuccess)
-
-export const getProductosApiListProductosParaMujerUrl = (params?: ProductosApiListProductosParaMujerParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosParaMujerUrl = (
+  params?: ProductosApiListProductosParaMujerParams,
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/listar_para_mujer?${stringifiedParams}` : `/api/productos/listar_para_mujer`
+  return stringifiedParams.length > 0
+    ? `/api/productos/listar_para_mujer?${stringifiedParams}`
+    : `/api/productos/listar_para_mujer`
 }
 
-export const productosApiListProductosParaMujer = async (params?: ProductosApiListProductosParaMujerParams, options?: RequestInit): Promise<productosApiListProductosParaMujerResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosParaMujerUrl(params),
-  {      
+export const productosApiListProductosParaMujer = async (
+  params?: ProductosApiListProductosParaMujerParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosParaMujerResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosParaMujerUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiListProductosParaMujerResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as productosApiListProductosParaMujerResponse
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as productosApiListProductosParaMujerResponse
 }
-  
-
 
 /**
  * Endpoint para listar todos los productos para hombre, con soporte de búsqueda por nombre.
@@ -179,46 +183,49 @@ export type productosApiListProductosParaHombreResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosParaHombreResponseSuccess = (productosApiListProductosParaHombreResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosParaHombreResponseSuccess =
+  productosApiListProductosParaHombreResponse200 & {
+    headers: Headers
+  }
+export type productosApiListProductosParaHombreResponse =
+  productosApiListProductosParaHombreResponseSuccess
 
-export type productosApiListProductosParaHombreResponse = (productosApiListProductosParaHombreResponseSuccess)
-
-export const getProductosApiListProductosParaHombreUrl = (params?: ProductosApiListProductosParaHombreParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosParaHombreUrl = (
+  params?: ProductosApiListProductosParaHombreParams,
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/listar_para_hombre?${stringifiedParams}` : `/api/productos/listar_para_hombre`
+  return stringifiedParams.length > 0
+    ? `/api/productos/listar_para_hombre?${stringifiedParams}`
+    : `/api/productos/listar_para_hombre`
 }
 
-export const productosApiListProductosParaHombre = async (params?: ProductosApiListProductosParaHombreParams, options?: RequestInit): Promise<productosApiListProductosParaHombreResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosParaHombreUrl(params),
-  {      
+export const productosApiListProductosParaHombre = async (
+  params?: ProductosApiListProductosParaHombreParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosParaHombreResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosParaHombreUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiListProductosParaHombreResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as productosApiListProductosParaHombreResponse
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as productosApiListProductosParaHombreResponse
 }
-  
-
 
 /**
  * Endpoint para listar los productos más actualizados, con soporte de búsqueda por nombre.
@@ -229,46 +236,51 @@ export type productosApiListProductosLoMasActualizadoResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosLoMasActualizadoResponseSuccess = (productosApiListProductosLoMasActualizadoResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosLoMasActualizadoResponseSuccess =
+  productosApiListProductosLoMasActualizadoResponse200 & {
+    headers: Headers
+  }
+export type productosApiListProductosLoMasActualizadoResponse =
+  productosApiListProductosLoMasActualizadoResponseSuccess
 
-export type productosApiListProductosLoMasActualizadoResponse = (productosApiListProductosLoMasActualizadoResponseSuccess)
-
-export const getProductosApiListProductosLoMasActualizadoUrl = (params?: ProductosApiListProductosLoMasActualizadoParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosLoMasActualizadoUrl = (
+  params?: ProductosApiListProductosLoMasActualizadoParams,
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/lo_mas_actualizado?${stringifiedParams}` : `/api/productos/lo_mas_actualizado`
+  return stringifiedParams.length > 0
+    ? `/api/productos/lo_mas_actualizado?${stringifiedParams}`
+    : `/api/productos/lo_mas_actualizado`
 }
 
-export const productosApiListProductosLoMasActualizado = async (params?: ProductosApiListProductosLoMasActualizadoParams, options?: RequestInit): Promise<productosApiListProductosLoMasActualizadoResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosLoMasActualizadoUrl(params),
-  {      
+export const productosApiListProductosLoMasActualizado = async (
+  params?: ProductosApiListProductosLoMasActualizadoParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosLoMasActualizadoResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosLoMasActualizadoUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: productosApiListProductosLoMasActualizadoResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as productosApiListProductosLoMasActualizadoResponse
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+  const data: productosApiListProductosLoMasActualizadoResponse['data'] = body
+    ? JSON.parse(body)
+    : {}
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as productosApiListProductosLoMasActualizadoResponse
 }
-  
-
 
 /**
  * Endpoint para listar los productos más baratos, con soporte de búsqueda por nombre.
@@ -279,46 +291,49 @@ export type productosApiListProductosLoMasBaratoResponse200 = {
   status: 200
 }
 
-export type productosApiListProductosLoMasBaratoResponseSuccess = (productosApiListProductosLoMasBaratoResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiListProductosLoMasBaratoResponseSuccess =
+  productosApiListProductosLoMasBaratoResponse200 & {
+    headers: Headers
+  }
+export type productosApiListProductosLoMasBaratoResponse =
+  productosApiListProductosLoMasBaratoResponseSuccess
 
-export type productosApiListProductosLoMasBaratoResponse = (productosApiListProductosLoMasBaratoResponseSuccess)
-
-export const getProductosApiListProductosLoMasBaratoUrl = (params?: ProductosApiListProductosLoMasBaratoParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getProductosApiListProductosLoMasBaratoUrl = (
+  params?: ProductosApiListProductosLoMasBaratoParams,
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/api/productos/lo_mas_barato?${stringifiedParams}` : `/api/productos/lo_mas_barato`
+  return stringifiedParams.length > 0
+    ? `/api/productos/lo_mas_barato?${stringifiedParams}`
+    : `/api/productos/lo_mas_barato`
 }
 
-export const productosApiListProductosLoMasBarato = async (params?: ProductosApiListProductosLoMasBaratoParams, options?: RequestInit): Promise<productosApiListProductosLoMasBaratoResponse> => {
-  
-  const res = await fetch(getProductosApiListProductosLoMasBaratoUrl(params),
-  {      
+export const productosApiListProductosLoMasBarato = async (
+  params?: ProductosApiListProductosLoMasBaratoParams,
+  options?: RequestInit,
+): Promise<productosApiListProductosLoMasBaratoResponse> => {
+  const res = await fetch(withBase(getProductosApiListProductosLoMasBaratoUrl(params)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiListProductosLoMasBaratoResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as productosApiListProductosLoMasBaratoResponse
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as productosApiListProductosLoMasBaratoResponse
 }
-  
-
 
 /**
  * Endpoint para obtener un producto por su ID.
@@ -329,39 +344,29 @@ export type productosApiGetProductoResponse200 = {
   status: 200
 }
 
-export type productosApiGetProductoResponseSuccess = (productosApiGetProductoResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiGetProductoResponseSuccess = productosApiGetProductoResponse200 & {
+  headers: Headers
+}
+export type productosApiGetProductoResponse = productosApiGetProductoResponseSuccess
 
-export type productosApiGetProductoResponse = (productosApiGetProductoResponseSuccess)
-
-export const getProductosApiGetProductoUrl = (productoId: number,) => {
-
-
-  
-
+export const getProductosApiGetProductoUrl = (productoId: number) => {
   return `/api/productos/obtener/${productoId}`
 }
 
-export const productosApiGetProducto = async (productoId: number, options?: RequestInit): Promise<productosApiGetProductoResponse> => {
-  
-  const res = await fetch(getProductosApiGetProductoUrl(productoId),
-  {      
+export const productosApiGetProducto = async (
+  productoId: number,
+  options?: RequestInit,
+): Promise<productosApiGetProductoResponse> => {
+  const res = await fetch(withBase(getProductosApiGetProductoUrl(productoId)), {
     ...options,
-    method: 'GET'
-    
-    
-  }
-)
+    method: 'GET',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiGetProductoResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as productosApiGetProductoResponse
 }
-  
-
 
 /**
  * Endpoint para crear un nuevo producto. Requiere autenticación.
@@ -372,45 +377,36 @@ export type productosApiCreateProductoResponse200 = {
   status: 200
 }
 
-export type productosApiCreateProductoResponseSuccess = (productosApiCreateProductoResponse200) & {
-  headers: Headers;
-};
-;
-
-export type productosApiCreateProductoResponse = (productosApiCreateProductoResponseSuccess)
+export type productosApiCreateProductoResponseSuccess = productosApiCreateProductoResponse200 & {
+  headers: Headers
+}
+export type productosApiCreateProductoResponse = productosApiCreateProductoResponseSuccess
 
 export const getProductosApiCreateProductoUrl = () => {
-
-
-  
-
   return `/api/productos/crear`
 }
 
-export const productosApiCreateProducto = async (productosApiCreateProductoBody: ProductosApiCreateProductoBody, options?: RequestInit): Promise<productosApiCreateProductoResponse> => {
-    const formData = new FormData();
-if(productosApiCreateProductoBody.imagen !== undefined) {
- formData.append(`imagen`, productosApiCreateProductoBody.imagen);
- }
-formData.append(`data`, JSON.stringify(productosApiCreateProductoBody.data));
-
-  const res = await fetch(getProductosApiCreateProductoUrl(),
-  {      
-    ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
+export const productosApiCreateProducto = async (
+  productosApiCreateProductoBody: ProductosApiCreateProductoBody,
+  options?: RequestInit,
+): Promise<productosApiCreateProductoResponse> => {
+  const formData = new FormData()
+  if (productosApiCreateProductoBody.imagen !== undefined) {
+    formData.append(`imagen`, productosApiCreateProductoBody.imagen)
   }
-)
+  formData.append(`data`, JSON.stringify(productosApiCreateProductoBody.data))
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const res = await fetch(withBase(getProductosApiCreateProductoUrl()), {
+    ...options,
+    method: 'POST',
+    body: formData,
+  })
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiCreateProductoResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as productosApiCreateProductoResponse
 }
-  
-
 
 /**
  * Endpoint para actualizar un producto existente. Requiere autenticación.
@@ -421,46 +417,37 @@ export type productosApiUpdateProductoResponse200 = {
   status: 200
 }
 
-export type productosApiUpdateProductoResponseSuccess = (productosApiUpdateProductoResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiUpdateProductoResponseSuccess = productosApiUpdateProductoResponse200 & {
+  headers: Headers
+}
+export type productosApiUpdateProductoResponse = productosApiUpdateProductoResponseSuccess
 
-export type productosApiUpdateProductoResponse = (productosApiUpdateProductoResponseSuccess)
-
-export const getProductosApiUpdateProductoUrl = (productoId: number,) => {
-
-
-  
-
+export const getProductosApiUpdateProductoUrl = (productoId: number) => {
   return `/api/productos/actualizar/${productoId}`
 }
 
-export const productosApiUpdateProducto = async (productoId: number,
-    productosApiUpdateProductoBody: ProductosApiUpdateProductoBody, options?: RequestInit): Promise<productosApiUpdateProductoResponse> => {
-    const formData = new FormData();
-if(productosApiUpdateProductoBody.imagen !== undefined) {
- formData.append(`imagen`, productosApiUpdateProductoBody.imagen);
- }
-formData.append(`data`, JSON.stringify(productosApiUpdateProductoBody.data));
-
-  const res = await fetch(getProductosApiUpdateProductoUrl(productoId),
-  {      
-    ...options,
-    method: 'PATCH'
-    ,
-    body: 
-      formData,
+export const productosApiUpdateProducto = async (
+  productoId: number,
+  productosApiUpdateProductoBody: ProductosApiUpdateProductoBody,
+  options?: RequestInit,
+): Promise<productosApiUpdateProductoResponse> => {
+  const formData = new FormData()
+  if (productosApiUpdateProductoBody.imagen !== undefined) {
+    formData.append(`imagen`, productosApiUpdateProductoBody.imagen)
   }
-)
+  formData.append(`data`, JSON.stringify(productosApiUpdateProductoBody.data))
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const res = await fetch(withBase(getProductosApiUpdateProductoUrl(productoId)), {
+    ...options,
+    method: 'PATCH',
+    body: formData,
+  })
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiUpdateProductoResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as productosApiUpdateProductoResponse
 }
-  
-
 
 /**
  * Endpoint para eliminar un producto existente. Requiere autenticación.
@@ -471,39 +458,29 @@ export type productosApiDeleteProductoResponse200 = {
   status: 200
 }
 
-export type productosApiDeleteProductoResponseSuccess = (productosApiDeleteProductoResponse200) & {
-  headers: Headers;
-};
-;
+export type productosApiDeleteProductoResponseSuccess = productosApiDeleteProductoResponse200 & {
+  headers: Headers
+}
+export type productosApiDeleteProductoResponse = productosApiDeleteProductoResponseSuccess
 
-export type productosApiDeleteProductoResponse = (productosApiDeleteProductoResponseSuccess)
-
-export const getProductosApiDeleteProductoUrl = (productoId: number,) => {
-
-
-  
-
+export const getProductosApiDeleteProductoUrl = (productoId: number) => {
   return `/api/productos/eliminar/${productoId}`
 }
 
-export const productosApiDeleteProducto = async (productoId: number, options?: RequestInit): Promise<productosApiDeleteProductoResponse> => {
-  
-  const res = await fetch(getProductosApiDeleteProductoUrl(productoId),
-  {      
+export const productosApiDeleteProducto = async (
+  productoId: number,
+  options?: RequestInit,
+): Promise<productosApiDeleteProductoResponse> => {
+  const res = await fetch(withBase(getProductosApiDeleteProductoUrl(productoId)), {
     ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
+    method: 'DELETE',
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: productosApiDeleteProductoResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as productosApiDeleteProductoResponse
 }
-  
-
 
 /**
  * @summary Login Usuario
@@ -528,37 +505,38 @@ export type usuariosApiLoginUsuarioResponse500 = {
   status: 500
 }
 
-export type usuariosApiLoginUsuarioResponseSuccess = (usuariosApiLoginUsuarioResponse200) & {
-  headers: Headers;
-};
-export type usuariosApiLoginUsuarioResponseError = (usuariosApiLoginUsuarioResponse400 | usuariosApiLoginUsuarioResponse404 | usuariosApiLoginUsuarioResponse500) & {
-  headers: Headers;
-};
+export type usuariosApiLoginUsuarioResponseSuccess = usuariosApiLoginUsuarioResponse200 & {
+  headers: Headers
+}
+export type usuariosApiLoginUsuarioResponseError = (
+  | usuariosApiLoginUsuarioResponse400
+  | usuariosApiLoginUsuarioResponse404
+  | usuariosApiLoginUsuarioResponse500
+) & {
+  headers: Headers
+}
 
-export type usuariosApiLoginUsuarioResponse = (usuariosApiLoginUsuarioResponseSuccess | usuariosApiLoginUsuarioResponseError)
+export type usuariosApiLoginUsuarioResponse =
+  | usuariosApiLoginUsuarioResponseSuccess
+  | usuariosApiLoginUsuarioResponseError
 
 export const getUsuariosApiLoginUsuarioUrl = () => {
-
-
-  
-
   return `/api/usuarios/login`
 }
 
-export const usuariosApiLoginUsuario = async (loginSchema: LoginSchema, options?: RequestInit): Promise<usuariosApiLoginUsuarioResponse> => {
-  
-  const res = await fetch(getUsuariosApiLoginUsuarioUrl(),
-  {      
+export const usuariosApiLoginUsuario = async (
+  loginSchema: LoginSchema,
+  options?: RequestInit,
+): Promise<usuariosApiLoginUsuarioResponse> => {
+  const res = await fetch(withBase(getUsuariosApiLoginUsuarioUrl()), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      loginSchema,)
-  }
-)
+    body: JSON.stringify(loginSchema),
+  })
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
   const data: usuariosApiLoginUsuarioResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as usuariosApiLoginUsuarioResponse
 }

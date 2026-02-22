@@ -111,10 +111,16 @@
         <div class="flex gap-3 mt-4 flex-wrap">
           <button
             type="submit"
-            class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold shadow-sm hover:shadow-md transition"
-            :disabled="!form.nombre || !form.precio"
+            class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold shadow-sm hover:shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
+            :disabled="!form.nombre || !form.precio || saving"
           >
-            {{ isEdit ? 'Guardar' : 'Crear' }}
+            <span v-if="saving" class="inline-flex items-center gap-2">
+              <span class="spinner" aria-hidden="true"></span>
+              {{ isEdit ? 'Guardando...' : 'Creando...' }}
+            </span>
+            <span v-else>
+              {{ isEdit ? 'Guardar' : 'Crear' }}
+            </span>
           </button>
           <button
             type="button"
@@ -138,6 +144,7 @@ const props = defineProps<{
   producto?: any
 }>()
 const emit = defineEmits(['close', 'save'])
+const saving = ref(false)
 const form = reactive({
   nombre: '',
   precio: 0,
@@ -182,8 +189,11 @@ watch(
   },
   { immediate: true },
 )
-function onSubmit() {
-  emit('save', { ...form, imagen: imagenPreview.value || form.imagen })
+async function onSubmit() {
+  if (saving.value) return
+  saving.value = true
+  await emit('save', { ...form, imagen: imagenPreview.value || form.imagen })
+  saving.value = false
 }
 </script>
 
@@ -210,5 +220,19 @@ function onSubmit() {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   background: var(--card);
+}
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
