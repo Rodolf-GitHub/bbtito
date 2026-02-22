@@ -1,5 +1,14 @@
 <template>
   <div class="home-page">
+    <section v-if="installAvailable" class="install-banner">
+      <div class="install-card">
+        <div class="install-text">
+          <p class="install-title">Instala la app de BBTito</p>
+          <p class="install-sub">Acceso rápido al catálogo desde tu pantalla de inicio.</p>
+        </div>
+        <button class="install-btn" @click="handleInstall">Instalar</button>
+      </div>
+    </section>
     <HeroHeader
       :destacados="productos"
       :totalMujer="totalMujer"
@@ -86,7 +95,7 @@ function handleNavFilter(filterKey) {
     }
   })
 }
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import HeroHeader from '../components/HeroHeader.vue'
 import ProductCard from '../components/ProductCard.vue'
 import ContactSection from '../components/ContactSection.vue'
@@ -120,6 +129,8 @@ const productos = ref([])
 const total = ref(0)
 const isLoading = ref(false)
 const error = ref(false)
+const installAvailable = ref(false)
+let deferredPrompt: BeforeInstallPromptEvent | null = null
 const PAGE_SIZE = 50
 const page = computed(() => Math.floor(offset.value / PAGE_SIZE) + 1)
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
@@ -128,6 +139,11 @@ const whatsappOpen = ref(false)
 const productoConsulta = ref(undefined)
 const totalMujer = ref(0)
 const totalHombre = ref(0)
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
+}
 
 const fetchData = async () => {
   isLoading.value = true
@@ -182,6 +198,11 @@ const fetchTotals = async () => {
 onMounted(() => {
   fetchData()
   fetchTotals()
+  window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
 })
 
 function onFilterChange(filterKey: string) {
@@ -192,6 +213,18 @@ function onFilterChange(filterKey: string) {
 function onSearchChange() {
   offset.value = 0
   fetchData()
+}
+function onBeforeInstallPrompt(event: Event) {
+  event.preventDefault()
+  deferredPrompt = event as BeforeInstallPromptEvent
+  installAvailable.value = true
+}
+async function handleInstall() {
+  if (!deferredPrompt) return
+  await deferredPrompt.prompt()
+  await deferredPrompt.userChoice
+  deferredPrompt = null
+  installAvailable.value = false
 }
 function prevPage() {
   if (offset.value > 0) {
@@ -236,6 +269,75 @@ function onConsultar(producto: any) {
   width: 100vw;
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+.install-banner {
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+}
+.install-card {
+  width: 100%;
+  max-width: 1100px;
+  background: linear-gradient(135deg, rgba(255, 45, 149, 0.08), rgba(255, 255, 255, 0.9));
+  border: 1px solid var(--border, #eee);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-shadow: 0 12px 35px rgba(255, 45, 149, 0.08);
+  backdrop-filter: blur(6px);
+}
+.install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+}
+.install-title {
+  font-weight: 800;
+  color: var(--foreground);
+  font-size: 1rem;
+}
+.install-sub {
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+.install-btn {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--primary, #ff2d95), #ff6fb1);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(255, 45, 149, 0.25);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+.install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(255, 45, 149, 0.3);
+}
+.install-btn:active {
+  transform: translateY(0);
+}
+@media (max-width: 640px) {
+  .install-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  .install-text {
+    text-align: left;
+  }
+  .install-btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* Centrar el contenido del hero en desktop */

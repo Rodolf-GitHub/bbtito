@@ -4,19 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/bbtito_logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ff2d95" />
     <title>BBTito</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
-    <!-- Deshabilitar service worker en desarrollo para evitar problemas de caché -->
+    <!-- Deshabilitar service worker solo en entornos locales -->
     <script>
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function (registrations) {
-          for (let registration of registrations) {
-            registration.unregister()
-          }
-        })
+        const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname)
+        if (isLocal) {
+          navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (let registration of registrations) {
+              registration.unregister()
+            }
+          })
+        }
       }
     </script>
   </body>
