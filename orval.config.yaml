@@ -1,0 +1,17 @@
+# orval config for BBTito
+
+# Documentación: https://orval.dev/docs/configuration
+
+# Puedes usar un archivo openapi.json local o una URL
+
+# Ejemplo básico:
+
+# openapi: ./openapi.json
+# output: ./src/api/generated
+# client: vue-query
+
+# Para empezar, reemplaza openapi con la ruta real de tu spec
+
+openapi: ./openapi.json
+output: ./src/api/generated
+client: fetch

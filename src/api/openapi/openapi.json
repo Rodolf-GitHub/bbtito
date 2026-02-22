@@ -1,0 +1,825 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BBTITO API",
+    "version": "1.0",
+    "description": ""
+  },
+  "paths": {
+    "/api/productos/listar_todos": {
+      "get": {
+        "operationId": "productos_api_list_productos",
+        "summary": "List Productos",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar todos los productos, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/listar_ofertas": {
+      "get": {
+        "operationId": "productos_api_list_productos_ofertas",
+        "summary": "List Productos Ofertas",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar todos los productos en oferta, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/listar_para_mujer": {
+      "get": {
+        "operationId": "productos_api_list_productos_para_mujer",
+        "summary": "List Productos Para Mujer",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar todos los productos para mujer, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/listar_para_hombre": {
+      "get": {
+        "operationId": "productos_api_list_productos_para_hombre",
+        "summary": "List Productos Para Hombre",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar todos los productos para hombre, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/lo_mas_actualizado": {
+      "get": {
+        "operationId": "productos_api_list_productos_lo_mas_actualizado",
+        "summary": "List Productos Lo Mas Actualizado",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar los productos más actualizados, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/lo_mas_barato": {
+      "get": {
+        "operationId": "productos_api_list_productos_lo_mas_barato",
+        "summary": "List Productos Lo Mas Barato",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "busqueda",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Busqueda"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para listar los productos más baratos, con soporte de búsqueda por nombre.",
+        "tags": [
+          "Productos"
+        ]
+      }
+    },
+    "/api/productos/crear": {
+      "post": {
+        "operationId": "productos_api_create_producto",
+        "summary": "Create Producto",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para crear un nuevo producto. Requiere autenticación.",
+        "tags": [
+          "Productos"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "imagen": {
+                    "format": "binary",
+                    "title": "Imagen",
+                    "type": "string"
+                  },
+                  "data": {
+                    "$ref": "#/components/schemas/ProductoCreateSchema"
+                  }
+                },
+                "title": "MultiPartBodyParams",
+                "type": "object",
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "AuthBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/actualizar/{producto_id}": {
+      "patch": {
+        "operationId": "productos_api_update_producto",
+        "summary": "Update Producto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "producto_id",
+            "schema": {
+              "title": "Producto Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para actualizar un producto existente. Requiere autenticación.",
+        "tags": [
+          "Productos"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "imagen": {
+                    "format": "binary",
+                    "title": "Imagen",
+                    "type": "string"
+                  },
+                  "data": {
+                    "$ref": "#/components/schemas/ProductoUpdateSchema"
+                  }
+                },
+                "title": "MultiPartBodyParams",
+                "type": "object",
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "AuthBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/eliminar/{producto_id}": {
+      "delete": {
+        "operationId": "productos_api_delete_producto",
+        "summary": "Delete Producto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "producto_id",
+            "schema": {
+              "title": "Producto Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Endpoint para eliminar un producto existente. Requiere autenticación.",
+        "tags": [
+          "Productos"
+        ],
+        "security": [
+          {
+            "AuthBearer": []
+          }
+        ]
+      }
+    },
+    "/api/usuarios/login": {
+      "post": {
+        "operationId": "usuarios_api_login_usuario",
+        "summary": "Login Usuario",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenSchema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailSchema"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginSchema"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Input": {
+        "properties": {
+          "limit": {
+            "default": 100,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "default": 0,
+            "minimum": 0,
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "title": "Input",
+        "type": "object"
+      },
+      "PagedProductoSchema": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProductoSchema"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "count"
+        ],
+        "title": "PagedProductoSchema",
+        "type": "object"
+      },
+      "ProductoSchema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "ID"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "nombre": {
+            "default": "ropa",
+            "maxLength": 255,
+            "title": "Nombre",
+            "type": "string"
+          },
+          "precio": {
+            "default": 0,
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Precio",
+            "type": "string"
+          },
+          "para_mujer": {
+            "default": true,
+            "title": "Para Mujer",
+            "type": "boolean"
+          },
+          "imagen": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imagen"
+          },
+          "en_oferta": {
+            "default": false,
+            "title": "En Oferta",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ProductoSchema",
+        "type": "object"
+      },
+      "ProductoCreateSchema": {
+        "properties": {
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "precio": {
+            "title": "Precio",
+            "type": "number"
+          },
+          "para_mujer": {
+            "default": true,
+            "title": "Para Mujer",
+            "type": "boolean"
+          },
+          "en_oferta": {
+            "default": false,
+            "title": "En Oferta",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "nombre",
+          "precio"
+        ],
+        "title": "ProductoCreateSchema",
+        "type": "object"
+      },
+      "ProductoUpdateSchema": {
+        "properties": {
+          "nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "precio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio"
+          },
+          "para_mujer": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Para Mujer"
+          },
+          "en_oferta": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "En Oferta"
+          }
+        },
+        "title": "ProductoUpdateSchema",
+        "type": "object"
+      },
+      "TokenSchema": {
+        "properties": {
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "title": "TokenSchema",
+        "type": "object"
+      },
+      "DetailSchema": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "title": "DetailSchema",
+        "type": "object"
+      },
+      "LoginSchema": {
+        "properties": {
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "contraseña": {
+            "title": "Contraseña",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre",
+          "contraseña"
+        ],
+        "title": "LoginSchema",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "AuthBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": []
+}

@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #fff;
+  --foreground: #222;
+  --primary: #ff2d95;
+  --primary-foreground: #fff;
+  --accent: #ff2d95;
+  --accent-foreground: #fff;
+  --secondary: #f6f6f6;
+  --secondary-foreground: #222;
+  --muted: #f6f6f6;
+  --muted-foreground: #888;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #e5e7eb;
+  --chart-1: #ff2d95;
+  --chart-2: #ff2d95;
+  --chart-3: #ff2d95;
+  --chart-4: #ff2d95;
+  --chart-5: #ff2d95;
+  --radius: 0.625rem;
+  --sidebar: #ff2d95;
+  --sidebar-foreground: #222;
+  --sidebar-primary: #ff2d95;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #ff2d95;
+  --sidebar-accent-foreground: #fff;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #e5e7eb;
+}
+
+.dark {
+  --background: #222;
+  --foreground: #fff;
+  --primary: #ff2d95;
+  --primary-foreground: #fff;
+  --accent: #ff2d95;
+  --accent-foreground: #fff;
+  --secondary: #333;
+  --secondary-foreground: #fff;
+  --muted: #333;
+  --muted-foreground: #bbb;
+  --border: #444;
+  --input: #444;
+}
+
+/* Utilidad para usar en clases personalizadas */
+.bg-primary {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+.text-primary {
+  color: var(--primary) !important;
+}
+.bg-accent {
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+}
+.text-accent {
+  color: var(--accent) !important;
+}
+.bg-secondary {
+  background-color: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+.text-secondary {
+  color: var(--secondary) !important;
+}
+.bg-background {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+.text-foreground {
+  color: var(--foreground) !important;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: var(--accent);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+/*
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+}
+*/
+
+.whatsapp-btn-fix {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+}
+
+.catalogo-btn-fix {
+  color: var(--primary) !important;
+  border: 1.5px solid var(--primary) !important;
+  background: var(--background) !important;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border 0.2s;
+}
+.catalogo-btn-fix:hover {
+  background: #ffe0f1 !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.consultar-btn-fix {
+  background: #fff !important;
+  color: var(--primary) !important;
+  border: 1.5px solid var(--primary) !important;
+  box-shadow: 0 1px 4px 0 #ff2d9522;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border 0.2s;
+}
+.consultar-btn-fix:hover {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+
+article.group.bg-card {
+  background: #f9f6fa !important;
+}
