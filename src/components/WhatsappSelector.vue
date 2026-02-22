@@ -22,7 +22,10 @@
           <X class="h-4 w-4" />
         </button>
       </div>
-      <div v-if="producto" class="mt-3 rounded-xl border border-border bg-secondary/50 p-3">
+      <div
+        v-if="producto && producto.id && producto.nombre && producto.precio"
+        class="mt-3 rounded-xl border border-border bg-secondary/50 p-3"
+      >
         <p class="text-xs uppercase tracking-widest text-muted-foreground">Consultando sobre</p>
         <p class="mt-1 font-medium text-foreground">{{ producto.nombre }}</p>
         <div class="mt-1 flex items-center gap-3 text-sm text-muted-foreground">

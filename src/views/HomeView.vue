@@ -190,7 +190,11 @@ function closeLightbox() {
   lightbox.value = null
 }
 function openWhatsapp(producto?: any) {
-  productoConsulta.value = producto
+  if (producto) {
+    productoConsulta.value = producto
+  } else {
+    productoConsulta.value = undefined
+  }
   whatsappOpen.value = true
 }
 function closeWhatsapp() {
