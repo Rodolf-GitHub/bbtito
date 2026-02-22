@@ -6,6 +6,7 @@
       :totalHombre="totalHombre"
       @whatsappClick="openWhatsapp"
       @imageClick="openLightbox"
+      @navFilter="handleNavFilter"
     />
     <section id="catalogo" class="catalog-section">
       <div class="catalog-content">
@@ -13,7 +14,10 @@
           <div class="catalog-title">
             <span class="catalog-label">Catálogo</span>
             <h2>Nuestros productos</h2>
-            <p>Explora nuestro catálogo completo. Usa los filtros para encontrar exactamente lo que buscas.</p>
+            <p>
+              Explora nuestro catálogo completo. Usa los filtros para encontrar exactamente lo que
+              buscas.
+            </p>
           </div>
           <span class="catalog-count">{{ total }} productos</span>
         </div>
@@ -53,7 +57,10 @@
         </div>
         <div class="pagination">
           <button :disabled="offset === 0" @click="prevPage">Anterior</button>
-          <span>Mostrando {{ productos.length }} elementos | Página {{ page }} de {{ totalPages }}</span>
+          <span
+            >Mostrando {{ productos.length }} elementos | Página {{ page }} de
+            {{ totalPages }}</span
+          >
           <button :disabled="page >= totalPages" @click="nextPage">Siguiente</button>
         </div>
       </div>
@@ -61,21 +68,24 @@
     <ContactSection />
     <SiteFooter />
     <WhatsappFab @click="openWhatsapp" />
-    <WhatsappSelector
-      :isOpen="whatsappOpen"
-      @close="closeWhatsapp"
-      :producto="productoConsulta"
-    />
-    <ImageLightbox
-      v-if="lightbox"
-      :src="lightbox.src"
-      :alt="lightbox.alt"
-      @close="closeLightbox"
-    />
+    <WhatsappSelector :isOpen="whatsappOpen" @close="closeWhatsapp" :producto="productoConsulta" />
+    <ImageLightbox v-if="lightbox" :src="lightbox.src" :alt="lightbox.alt" @close="closeLightbox" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { nextTick } from 'vue'
+function handleNavFilter(filterKey) {
+  activeFilter.value = filterKey
+  offset.value = 0
+  fetchData()
+  nextTick(() => {
+    const catalogo = document.getElementById('catalogo')
+    if (catalogo) {
+      catalogo.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  })
+}
 import { ref, computed, onMounted } from 'vue'
 import HeroHeader from '../components/HeroHeader.vue'
 import ProductCard from '../components/ProductCard.vue'
@@ -93,7 +103,12 @@ const filters = [
   { key: 'mujer', label: 'Mujer', icon: Heart, endpoint: API_ENDPOINTS.listarMujer },
   { key: 'hombre', label: 'Hombre', icon: User, endpoint: API_ENDPOINTS.listarHombre },
   { key: 'recientes', label: 'Recientes', icon: Clock, endpoint: API_ENDPOINTS.loMasActualizado },
-  { key: 'baratos', label: 'Mas baratos', icon: ArrowDownNarrowWide, endpoint: API_ENDPOINTS.loMasBarato },
+  {
+    key: 'baratos',
+    label: 'Mas baratos',
+    icon: ArrowDownNarrowWide,
+    endpoint: API_ENDPOINTS.loMasBarato,
+  },
 ]
 
 const activeFilter = ref('todos')
@@ -116,7 +131,7 @@ const fetchData = async () => {
   isLoading.value = true
   error.value = false
   try {
-    const currentFilter = filters.find(f => f.key === activeFilter.value)
+    const currentFilter = filters.find((f) => f.key === activeFilter.value)
     let endpoint = ''
     if (searchQuery.value) {
       endpoint = `${currentFilter.endpoint}?busqueda=${encodeURIComponent(searchQuery.value)}&limit=50&offset=${offset.value}`
@@ -294,7 +309,7 @@ function onConsultar(producto: any) {
 .filter-btn.active {
   background: var(--primary, #ff2d95);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(255,45,149,0.08);
+  box-shadow: 0 2px 8px rgba(255, 45, 149, 0.08);
 }
 .products-grid {
   display: grid;
@@ -312,7 +327,9 @@ function onConsultar(producto: any) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
-.loading, .error, .empty {
+.loading,
+.error,
+.empty {
   margin: 2rem 0;
   color: var(--muted-foreground, #888);
 }
