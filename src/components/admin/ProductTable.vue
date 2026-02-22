@@ -1,5 +1,15 @@
 <template>
   <div class="overflow-x-auto rounded-2xl border border-border bg-card p-4 mt-4">
+    <div class="mb-4">
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          v-model="searchQuery"
+          class="w-full px-4 py-2 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/40 bg-background text-foreground text-base"
+        />
+      </div>
+    </div>
     <div class="flex justify-end mb-2 md:hidden">
       <button
         @click="expanded = !expanded"
@@ -21,7 +31,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="p in productos" :key="p.id" class="border-t border-border hover:bg-secondary/40">
+        <tr
+          v-for="p in filteredProductos"
+          :key="p.id"
+          class="border-t border-border hover:bg-secondary/40"
+        >
           <td v-if="expanded || isDesktop" class="px-4 py-2 font-mono">{{ p.id }}</td>
           <td class="px-4 py-2">
             <img
@@ -71,14 +85,17 @@
         </tr>
       </tbody>
     </table>
-    <div v-if="!productos || productos.length === 0" class="text-center text-muted-foreground py-8">
+    <div
+      v-if="!filteredProductos || filteredProductos.length === 0"
+      class="text-center text-muted-foreground py-8"
+    >
       No hay productos para mostrar.
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Pencil, Trash2 } from 'lucide-vue-next'
 import { buildImageUrl } from '../../api'
 const props = defineProps<{ productos: any[] }>()
@@ -86,6 +103,14 @@ defineEmits(['edit', 'delete'])
 
 const expanded = ref(false)
 const isDesktop = ref(false)
+const searchQuery = ref('')
+
+const filteredProductos = computed(() => {
+  if (!searchQuery.value) return props.productos
+  return props.productos.filter(
+    (p) => p.nombre && p.nombre.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
 
 function checkDesktop() {
   isDesktop.value = window.innerWidth >= 1024
@@ -101,6 +126,19 @@ onUnmounted(() => {
 })
 </script>
 <style scoped>
+.search-bar {
+  margin: 1rem 0 0.5rem 0;
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border, #eee);
+  font-size: 1rem;
+  background: var(--background, #fff);
+  color: var(--foreground, #222);
+}
 .icon-btn {
   display: inline-flex;
   align-items: center;
