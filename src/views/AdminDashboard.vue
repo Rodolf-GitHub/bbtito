@@ -19,64 +19,75 @@
         <StatCard label="Mujer" :value="totalMujer" icon="F" />
         <StatCard label="Hombre" :value="totalHombre" icon="M" />
       </div>
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <button
-          @click="openCreateModal"
-          class="h-10 rounded-xl gap-2 bg-primary text-primary-foreground flex items-center justify-center px-4 font-semibold"
-        >
-          <span>➕</span> Nuevo producto
-        </button>
-      </div>
-      <div v-if="isLoading" class="flex items-center justify-center py-16">
-        <span class="animate-spin text-primary text-2xl">⏳</span>
-      </div>
-      <div
-        v-else-if="error"
-        class="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center"
-      >
-        <p class="text-sm text-destructive">
-          No se pudieron cargar los productos. Verifica que el servidor esté activo.
-        </p>
-        <button @click="fetchData" class="mt-4 rounded-xl border px-4 py-2">Reintentar</button>
-      </div>
-      <div v-else>
-        <ProductTable :productos="productos" @edit="openEditModal" @delete="onDelete" />
-        <div class="flex flex-col items-center gap-4 mt-6">
-          <span class="text-sm font-medium text-primary bg-card rounded-full px-4 py-2 shadow-sm">
-            Mostrando {{ productos.length }} elementos | Página {{ page }} de {{ totalPages }}
-          </span>
-          <div class="flex gap-3 mt-2">
+
+      <div>
+        <div class="catalog-content">
+          <div class="catalog-header">
+            <div class="catalog-title">
+              <span class="catalog-label">Catálogo</span>
+              <h2>Administrar productos</h2>
+              <p>
+                Explora y administra el catálogo. Usa los filtros para encontrar exactamente lo que
+                buscas.
+              </p>
+            </div>
+            <span class="catalog-count">{{ total }} productos</span>
+          </div>
+          <div class="search-bar">
+            <input
+              type="text"
+              placeholder="Buscar por nombre..."
+              v-model="busqueda"
+              @input="onSearchChange"
+            />
+          </div>
+          <div class="filters">
             <button
-              class="rounded-full px-5 py-2 text-sm font-semibold transition-colors shadow-sm"
-              :class="{
-                'bg-muted text-muted-foreground cursor-not-allowed': offset === 0,
-                'bg-primary text-primary-foreground hover:bg-primary/80': offset !== 0,
-              }"
-              :disabled="offset === 0"
-              @click="prevPage"
+              v-for="filter in filters"
+              :key="filter.key"
+              :class="['filter-btn', { active: activeFilter === filter.key }]"
+              @click="onFilterChange(filter.key)"
             >
-              Anterior
-            </button>
-            <button
-              class="rounded-full px-5 py-2 text-sm font-semibold transition-colors shadow-sm"
-              :class="{
-                'bg-muted text-muted-foreground cursor-not-allowed': page >= totalPages,
-                'bg-primary text-primary-foreground hover:bg-primary/80': page < totalPages,
-              }"
-              :disabled="page >= totalPages"
-              @click="nextPage"
-            >
-              Siguiente
+              <component :is="filter.icon" class="filter-icon" />
+              {{ filter.label }}
             </button>
           </div>
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <button
+              @click="openCreateModal"
+              class="h-10 rounded-xl gap-2 bg-primary text-primary-foreground flex items-center justify-center px-4 font-semibold"
+            >
+              <span>➕</span> Nuevo producto
+            </button>
+          </div>
+
+          <div v-if="isLoading" class="loading">Cargando...</div>
+          <div v-else-if="error" class="error">No se pudieron cargar los productos.</div>
+          <div v-else-if="productos.length === 0" class="empty">
+            <span v-if="busqueda">No se encontraron productos para "{{ busqueda }}"</span>
+            <span v-else>No hay productos disponibles con este filtro.</span>
+          </div>
+          <div v-else>
+            <ProductTable :productos="productos" @edit="openEditModal" @delete="onDelete" />
+          </div>
+
+          <div class="pagination">
+            <button :disabled="offset === 0" @click="prevPage">Anterior</button>
+            <span
+              >Mostrando {{ productos.length }} elementos | Página {{ page }} de
+              {{ totalPages }}</span
+            >
+            <button :disabled="page >= totalPages" @click="nextPage">Siguiente</button>
+          </div>
+
+          <ProductModal
+            :open="modalOpen"
+            :isEdit="!!selectedProduct"
+            :producto="selectedProduct"
+            @close="closeModal"
+            @save="onSave"
+          />
         </div>
-        <ProductModal
-          :open="modalOpen"
-          :isEdit="!!selectedProduct"
-          :producto="selectedProduct"
-          @close="closeModal"
-          @save="onSave"
-        />
       </div>
     </div>
   </div>
@@ -84,9 +95,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { fetchProductos, API_ENDPOINTS } from '../api'
-import { productosApiCreateProducto } from '../api/generated'
-import type { ProductosApiCreateProductoBody } from '../api/schemas'
+import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide } from 'lucide-vue-next'
+import { API_ENDPOINTS, fetchProductos } from '../api'
+import { productosApiCreateProducto, productosApiUpdateProducto } from '../api/generated'
+import type { ProductosApiCreateProductoBody, ProductosApiUpdateProductoBody } from '../api/schemas'
 
 import ProductTable from '../components/admin/ProductTable.vue'
 import StatCard from '../components/admin/StatCard.vue'
@@ -112,25 +124,25 @@ async function onSave(product: any) {
   isLoading.value = true
   error.value = false
   try {
-    if (!selectedProduct.value) {
-      // Adaptar exactamente al schema de orval
-      let imagenBlob: Blob | undefined = undefined
-      if (
-        product.imagen &&
-        typeof product.imagen === 'string' &&
-        product.imagen.startsWith('data:')
-      ) {
-        // Convertir base64 a Blob
-        const arr = product.imagen.split(',')
-        const mime = arr[0].match(/:(.*?);/)[1]
-        const bstr = atob(arr[1])
-        let n = bstr.length
-        const u8arr = new Uint8Array(n)
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n)
-        }
-        imagenBlob = new Blob([u8arr], { type: mime })
+    // Convertir imagen base64 a Blob si aplica
+    let imagenBlob: Blob | undefined = undefined
+    if (
+      product.imagen &&
+      typeof product.imagen === 'string' &&
+      product.imagen.startsWith('data:')
+    ) {
+      const arr = product.imagen.split(',')
+      const mime = arr[0].match(/:(.*?);/)[1]
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
       }
+      imagenBlob = new Blob([u8arr], { type: mime })
+    }
+
+    if (!selectedProduct.value) {
       const body: ProductosApiCreateProductoBody = {
         data: {
           nombre: product.nombre,
@@ -140,12 +152,22 @@ async function onSave(product: any) {
         },
         ...(imagenBlob ? { imagen: imagenBlob } : {}),
       }
-      console.log('Payload enviado a productosApiCreateProducto', body)
       await productosApiCreateProducto(body, {
         headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
       })
     } else {
-      // Aquí iría la lógica de editar producto (no implementado)
+      const body: ProductosApiUpdateProductoBody = {
+        data: {
+          nombre: product.nombre,
+          precio: typeof product.precio === 'string' ? parseFloat(product.precio) : product.precio,
+          para_mujer: product.para_mujer,
+          en_oferta: product.en_oferta,
+        },
+        ...(imagenBlob ? { imagen: imagenBlob } : {}),
+      }
+      await productosApiUpdateProducto(selectedProduct.value.id, body, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
+      })
     }
     closeModal()
     await fetchData()
@@ -166,6 +188,20 @@ function onDelete(product: any) {
 
 import { watch } from 'vue'
 import type { ProductoSchema } from '../api/schemas'
+const filters = [
+  { key: 'todos', label: 'Todos', icon: ShoppingBag, endpoint: API_ENDPOINTS.listarTodos },
+  { key: 'ofertas', label: 'Ofertas', icon: Tag, endpoint: API_ENDPOINTS.listarOfertas },
+  { key: 'mujer', label: 'Mujer', icon: Heart, endpoint: API_ENDPOINTS.listarMujer },
+  { key: 'hombre', label: 'Hombre', icon: User, endpoint: API_ENDPOINTS.listarHombre },
+  { key: 'recientes', label: 'Recientes', icon: Clock, endpoint: API_ENDPOINTS.loMasActualizado },
+  {
+    key: 'baratos',
+    label: 'Mas baratos',
+    icon: ArrowDownNarrowWide,
+    endpoint: API_ENDPOINTS.loMasBarato,
+  },
+]
+const activeFilter = ref('todos')
 const productos = ref<ProductoSchema[]>([])
 const total = ref(0)
 const totalOfertas = ref(0)
@@ -179,31 +215,34 @@ const PAGE_SIZE = 50
 const page = computed(() => Math.floor(offset.value / PAGE_SIZE) + 1)
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
 
-let debounceTimeout: any = null
-watch(busqueda, (val) => {
+function onSearchChange() {
   offset.value = 0
-  if (debounceTimeout) clearTimeout(debounceTimeout)
-  debounceTimeout = setTimeout(() => {
-    fetchData()
-  }, 400)
-})
+  fetchData()
+}
+function onFilterChange(filterKey: string) {
+  activeFilter.value = filterKey
+  offset.value = 0
+  fetchData()
+}
 
 async function fetchData() {
   isLoading.value = true
   error.value = false
   try {
+    const currentFilter = filters.find((f) => f.key === activeFilter.value)
     let endpoint = ''
     if (busqueda.value) {
-      endpoint = `${API_ENDPOINTS.listarTodos}?busqueda=${encodeURIComponent(busqueda.value)}&limit=${PAGE_SIZE}&offset=${offset.value}`
+      endpoint = `${currentFilter.endpoint}?busqueda=${encodeURIComponent(busqueda.value)}&limit=${PAGE_SIZE}&offset=${offset.value}`
     } else {
-      endpoint = `${API_ENDPOINTS.listarTodos}?limit=${PAGE_SIZE}&offset=${offset.value}`
+      endpoint = `${currentFilter.endpoint}?limit=${PAGE_SIZE}&offset=${offset.value}`
     }
     const data = await fetchProductos(endpoint)
-    productos.value = data.items
-    total.value = data.count
-    totalOfertas.value = data.items.filter((p: any) => p.en_oferta).length
-    totalMujer.value = data.items.filter((p: any) => p.para_mujer).length
-    totalHombre.value = data.items.filter((p: any) => !p.para_mujer).length
+    const items = data.items || []
+    productos.value = items
+    total.value = data.count || 0
+    totalOfertas.value = items.filter((p: any) => p.en_oferta).length
+    totalMujer.value = items.filter((p: any) => p.para_mujer).length
+    totalHombre.value = items.filter((p: any) => !p.para_mujer).length
   } catch (e) {
     error.value = true
   } finally {
@@ -221,6 +260,9 @@ function nextPage() {
     offset.value += PAGE_SIZE
     fetchData()
   }
+}
+function onTableSearch(query: string) {
+  busqueda.value = query
 }
 onMounted(fetchData)
 </script>
@@ -244,5 +286,101 @@ onMounted(fetchData)
 }
 .rounded-2xl.border.bg-destructive\/5 {
   margin-top: 2rem;
+}
+/* Copiado de HomeView.vue para filtros y buscador */
+.catalog-content {
+  background: var(--card-bg, #fff8fa);
+  border-radius: 1rem;
+  border: 1px solid var(--border, #eee);
+  padding: 0.5rem 0.25rem;
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+.catalog-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.catalog-title {
+  text-align: center;
+}
+.catalog-label {
+  color: var(--primary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.catalog-count {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+.search-bar {
+  margin: 1rem 0;
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border, #eee);
+  font-size: 1rem;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1px solid var(--border, #eee);
+  background: var(--background, #fff);
+  color: var(--muted-foreground, #888);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn.active {
+  background: var(--primary, #ff2d95);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 45, 149, 0.08);
+}
+.loading,
+.error,
+.empty {
+  margin: 2rem 0;
+  color: var(--muted-foreground, #888);
+}
+.pagination {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0 0 0;
+}
+.pagination button {
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  background: var(--primary, #ff2d95);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination button:disabled {
+  background: var(--muted, #eee);
+  color: var(--muted-foreground, #888);
+  cursor: not-allowed;
 }
 </style>
