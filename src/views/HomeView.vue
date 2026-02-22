@@ -57,8 +57,8 @@
         </div>
         <div v-else class="products-grid">
           <ProductCard
-            v-for="producto in productos"
-            :key="producto.id"
+            v-for="(producto, index) in productos"
+            :key="producto.id ?? index"
             :producto="producto"
             @imageClick="openLightbox"
             @consultar="onConsultar"
@@ -78,13 +78,18 @@
     <SiteFooter />
     <WhatsappFab @click="openWhatsapp" />
     <WhatsappSelector :isOpen="whatsappOpen" @close="closeWhatsapp" :producto="productoConsulta" />
-    <ImageLightbox v-if="lightbox" :src="lightbox.src" :alt="lightbox.alt" @close="closeLightbox" />
+    <ImageLightbox
+      v-if="lightbox"
+      :src="lightbox?.src"
+      :alt="lightbox?.alt"
+      @close="closeLightbox"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { nextTick } from 'vue'
-function handleNavFilter(filterKey) {
+function handleNavFilter(filterKey: string) {
   activeFilter.value = filterKey
   offset.value = 0
   fetchData()
@@ -106,6 +111,7 @@ import ImageLightbox from '../components/ImageLightbox.vue'
 import { fetchProductos, API_ENDPOINTS } from '../api'
 import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide, Search } from 'lucide-vue-next'
 import { productosApiGetProducto } from '../api/generated'
+import type { ProductoSchema } from '../api/schemas'
 
 const filters = [
   { key: 'todos', label: 'Todos', icon: ShoppingBag, endpoint: API_ENDPOINTS.listarTodos },
@@ -125,7 +131,7 @@ const filters = [
 const activeFilter = ref('todos')
 const searchQuery = ref('')
 const offset = ref(0)
-const productos = ref([])
+const productos = ref<ProductoSchema[]>([])
 const total = ref(0)
 const isLoading = ref(false)
 const error = ref(false)
@@ -134,7 +140,7 @@ let deferredPrompt: BeforeInstallPromptEvent | null = null
 const PAGE_SIZE = 50
 const page = computed(() => Math.floor(offset.value / PAGE_SIZE) + 1)
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
-const lightbox = ref(null)
+const lightbox = ref<{ src: string; alt: string } | null>(null)
 const whatsappOpen = ref(false)
 const productoConsulta = ref(undefined)
 const totalMujer = ref(0)
@@ -150,6 +156,11 @@ const fetchData = async () => {
   error.value = false
   try {
     const currentFilter = filters.find((f) => f.key === activeFilter.value)
+    if (!currentFilter) {
+      productos.value = []
+      total.value = 0
+      return
+    }
     if (currentFilter?.key === 'porId') {
       const trimmed = searchQuery.value.trim()
       if (!trimmed) {
@@ -164,7 +175,7 @@ const fetchData = async () => {
         return
       }
       const response = await productosApiGetProducto(id)
-      const producto = (response as any)?.data || null
+      const producto = (response as any)?.data as ProductoSchema | undefined
       productos.value = producto ? [producto] : []
       total.value = productos.value.length
       offset.value = 0

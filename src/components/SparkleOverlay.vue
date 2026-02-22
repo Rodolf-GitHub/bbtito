@@ -1,17 +1,13 @@
 <template>
   <div class="sparkle-container absolute inset-0 w-full h-full pointer-events-none z-1">
-    <span
-      v-for="(star, i) in stars"
-      :key="i"
-      :style="starStyle(i)"
-    >
+    <span v-for="(star, i) in stars" :key="i" :style="starStyle(i)">
       <StarIcon :size="star.size" color="#ff2d95" />
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, type CSSProperties } from 'vue'
 import { StarIcon } from 'lucide-vue-next'
 const stars = Array.from({ length: 12 }, (_, i) => ({
   left: `${6 + i * 8}%`,
@@ -27,9 +23,10 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(interval)
 })
-function starStyle(i: number) {
+function starStyle(i: number): CSSProperties {
   const star = stars[i]
-  const progress = ((tick.value / (star.duration * 20)) + star.delay / star.duration) % 1
+  if (!star) return {}
+  const progress = (tick.value / (star.duration * 20) + star.delay / star.duration) % 1
   const top = `${progress * 100}%`
   return {
     position: 'absolute',

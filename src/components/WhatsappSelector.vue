@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="fixed inset-0 z-[85] flex items-center justify-center bg-black/60 p-4"
-    @click="onClose"
+    @click="handleClose"
     role="dialog"
     aria-modal="true"
     aria-label="Contactos WhatsApp"
@@ -16,7 +16,7 @@
         <button
           class="flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground bg-white/20 hover:bg-white/40 transition"
           type="button"
-          @click="onClose"
+          @click="handleClose"
           aria-label="Cerrar"
         >
           <X class="h-4 w-4" />
@@ -67,11 +67,17 @@
 <script setup lang="ts">
 import { MessageCircle, X } from 'lucide-vue-next'
 import { buildWhatsappLink, WHATSAPP_CONTACTOS as contactos } from '../api'
-const props = defineProps({
-  isOpen: Boolean,
-  onClose: Function,
-  producto: Object,
-})
+import type { ProductoSchema } from '../api/schemas'
+
+const props = defineProps<{
+  isOpen: boolean
+  onClose?: () => void
+  producto?: ProductoSchema | null
+}>()
+
+function handleClose() {
+  props.onClose?.()
+}
 </script>
 
 <!-- Tailwind CSS classes, no scoped styles needed -->

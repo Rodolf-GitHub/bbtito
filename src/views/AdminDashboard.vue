@@ -238,6 +238,14 @@ async function fetchData() {
   error.value = false
   try {
     const currentFilter = filters.find((f) => f.key === activeFilter.value)
+    if (!currentFilter) {
+      productos.value = []
+      total.value = 0
+      totalOfertas.value = 0
+      totalMujer.value = 0
+      totalHombre.value = 0
+      return
+    }
     if (currentFilter?.key === 'porId') {
       const trimmed = busqueda.value.trim()
       if (!trimmed) {
