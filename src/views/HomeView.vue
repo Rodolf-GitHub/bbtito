@@ -4,7 +4,7 @@
       <div class="install-card">
         <div class="install-text">
           <p class="install-title">Instala la app de BBTito</p>
-          <p class="install-sub">Acceso rápido al catálogo desde tu pantalla de inicio.</p>
+          <p class="install-sub">La experiencia en la tienda es mejor desde la aplicación.</p>
         </div>
         <button class="install-btn" @click="handleInstall">Instalar</button>
       </div>
