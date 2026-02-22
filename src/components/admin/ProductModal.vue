@@ -4,7 +4,7 @@
     class="fixed inset-0 z-50 flex flex-col justify-center items-center min-h-screen bg-black/60 px-2 py-8 sm:px-0 sm:py-0"
   >
     <div
-      class="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 w-full max-w-xl max-h-[92vh] overflow-y-auto relative border border-border/60"
+      class="bg-white rounded-3xl shadow-2xl p-4 sm:p-6 w-full max-w-lg sm:max-w-xl max-h-[92vh] overflow-y-auto relative border border-border/60"
     >
       <div
         class="absolute inset-x-6 top-0 h-1.5 rounded-b-full bg-gradient-to-r from-primary via-pink-400 to-orange-300"
@@ -17,7 +17,7 @@
       >
         ✕
       </button>
-      <div class="mb-6 flex flex-col gap-1 text-center">
+      <div class="mb-5 sm:mb-6 flex flex-col gap-1 text-center">
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary/90">
           Gestión de catálogo
         </p>
@@ -26,8 +26,8 @@
         </h2>
         <p class="text-sm text-muted-foreground">Completa la información y guarda los cambios.</p>
       </div>
-      <form @submit.prevent="onSubmit" class="flex flex-col gap-6">
-        <div class="grid gap-6 md:grid-cols-2">
+      <form @submit.prevent="onSubmit" class="flex flex-col gap-4 sm:gap-6">
+        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium">Nombre del producto</label>
             <input
@@ -49,7 +49,7 @@
             />
           </div>
         </div>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2 sm:gap-3">
           <button
             type="button"
             class="pill"
@@ -81,7 +81,7 @@
             <img
               :src="imagenPreview"
               alt="Preview"
-              class="h-48 w-48 rounded-xl border object-cover"
+              class="h-40 w-40 sm:h-48 sm:w-48 rounded-xl border object-cover"
             />
             <button
               type="button"
@@ -95,7 +95,7 @@
             v-else
             type="button"
             @click="triggerFile"
-            class="flex h-48 w-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition hover:border-primary hover:text-primary"
+            class="flex h-40 w-40 sm:h-48 sm:w-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-secondary/30 text-muted-foreground transition hover:border-primary hover:text-primary"
           >
             <span class="text-3xl">📷</span>
             <span class="text-xs">Subir imagen</span>
@@ -108,7 +108,7 @@
             class="hidden"
           />
         </div>
-        <div class="flex gap-3 mt-4 flex-wrap">
+        <div class="flex gap-2 sm:gap-3 mt-4 flex-wrap">
           <button
             type="submit"
             class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold shadow-sm hover:shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"

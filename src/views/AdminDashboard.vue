@@ -104,6 +104,7 @@ import {
   productosApiCreateProducto,
   productosApiUpdateProducto,
   productosApiGetProducto,
+  productosApiDeleteProducto,
 } from '../api/generated'
 import type { ProductosApiCreateProductoBody, ProductosApiUpdateProductoBody } from '../api/schemas'
 
@@ -186,11 +187,20 @@ async function onSave(product: any) {
   }
 }
 function onDelete(product: any) {
-  // Aquí deberías mostrar confirmación y llamar a la API para eliminar
-  if (confirm('¿Seguro que deseas eliminar este producto?')) {
-    // Llama a la API para eliminar y luego recarga
-    fetchData()
-  }
+  if (!product?.id) return
+  if (!confirm('¿Seguro que deseas eliminar este producto?')) return
+  isLoading.value = true
+  error.value = false
+  productosApiDeleteProducto(product.id, {
+    headers: { Authorization: `Bearer ${localStorage.getItem('bbtito_auth_token')}` },
+  })
+    .then(() => fetchData())
+    .catch(() => {
+      error.value = true
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
 }
 
 import { watch } from 'vue'
