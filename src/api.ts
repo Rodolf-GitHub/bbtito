@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
   listarHombre: `${API_BASE}/api/productos/listar_para_hombre`,
   loMasActualizado: `${API_BASE}/api/productos/lo_mas_actualizado`,
   loMasBarato: `${API_BASE}/api/productos/lo_mas_barato`,
+  obtenerProducto: `${API_BASE}/api/productos/obtener`,
 } as const
 
 export function buildImageUrl(imagePath: string | null): string {

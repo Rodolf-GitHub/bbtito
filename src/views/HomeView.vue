@@ -96,6 +96,7 @@ import WhatsappFab from '../components/WhatsappFab.vue'
 import ImageLightbox from '../components/ImageLightbox.vue'
 import { fetchProductos, API_ENDPOINTS } from '../api'
 import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide, Search } from 'lucide-vue-next'
+import { productosApiGetProducto } from '../api/generated'
 
 const filters = [
   { key: 'todos', label: 'Todos', icon: ShoppingBag, endpoint: API_ENDPOINTS.listarTodos },
@@ -109,6 +110,7 @@ const filters = [
     icon: ArrowDownNarrowWide,
     endpoint: API_ENDPOINTS.loMasBarato,
   },
+  { key: 'porId', label: 'Por ID', icon: Search, endpoint: API_ENDPOINTS.obtenerProducto },
 ]
 
 const activeFilter = ref('todos')
@@ -132,6 +134,26 @@ const fetchData = async () => {
   error.value = false
   try {
     const currentFilter = filters.find((f) => f.key === activeFilter.value)
+    if (currentFilter?.key === 'porId') {
+      const trimmed = searchQuery.value.trim()
+      if (!trimmed) {
+        productos.value = []
+        total.value = 0
+        return
+      }
+      const id = Number(trimmed)
+      if (Number.isNaN(id)) {
+        productos.value = []
+        total.value = 0
+        return
+      }
+      const response = await productosApiGetProducto(id)
+      const producto = (response as any)?.data || null
+      productos.value = producto ? [producto] : []
+      total.value = productos.value.length
+      offset.value = 0
+      return
+    }
     let endpoint = ''
     if (searchQuery.value) {
       endpoint = `${currentFilter.endpoint}?busqueda=${encodeURIComponent(searchQuery.value)}&limit=50&offset=${offset.value}`

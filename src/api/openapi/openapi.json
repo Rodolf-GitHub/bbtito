@@ -63,9 +63,7 @@
           }
         },
         "description": "Endpoint para listar todos los productos, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
       }
     },
     "/api/productos/listar_ofertas": {
@@ -125,9 +123,7 @@
           }
         },
         "description": "Endpoint para listar todos los productos en oferta, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
       }
     },
     "/api/productos/listar_para_mujer": {
@@ -187,9 +183,7 @@
           }
         },
         "description": "Endpoint para listar todos los productos para mujer, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
       }
     },
     "/api/productos/listar_para_hombre": {
@@ -249,9 +243,7 @@
           }
         },
         "description": "Endpoint para listar todos los productos para hombre, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
       }
     },
     "/api/productos/lo_mas_actualizado": {
@@ -311,9 +303,7 @@
           }
         },
         "description": "Endpoint para listar los productos más actualizados, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
       }
     },
     "/api/productos/lo_mas_barato": {
@@ -373,9 +363,38 @@
           }
         },
         "description": "Endpoint para listar los productos más baratos, con soporte de búsqueda por nombre.",
-        "tags": [
-          "Productos"
-        ]
+        "tags": ["Productos"]
+      }
+    },
+    "/api/productos/obtener/{producto_id}": {
+      "get": {
+        "operationId": "productos_api_get_producto",
+        "summary": "Get Producto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "producto_id",
+            "schema": {
+              "title": "Producto Id",
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoSchema"
+                }
+              }
+            }
+          }
+        },
+        "description": "Endpoint para obtener un producto por su ID.",
+        "tags": ["Productos"]
       }
     },
     "/api/productos/crear": {
@@ -396,9 +415,7 @@
           }
         },
         "description": "Endpoint para crear un nuevo producto. Requiere autenticación.",
-        "tags": [
-          "Productos"
-        ],
+        "tags": ["Productos"],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -415,9 +432,7 @@
                 },
                 "title": "MultiPartBodyParams",
                 "type": "object",
-                "required": [
-                  "data"
-                ]
+                "required": ["data"]
               }
             }
           },
@@ -458,9 +473,7 @@
           }
         },
         "description": "Endpoint para actualizar un producto existente. Requiere autenticación.",
-        "tags": [
-          "Productos"
-        ],
+        "tags": ["Productos"],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -477,9 +490,7 @@
                 },
                 "title": "MultiPartBodyParams",
                 "type": "object",
-                "required": [
-                  "data"
-                ]
+                "required": ["data"]
               }
             }
           },
@@ -513,9 +524,7 @@
           }
         },
         "description": "Endpoint para eliminar un producto existente. Requiere autenticación.",
-        "tags": [
-          "Productos"
-        ],
+        "tags": ["Productos"],
         "security": [
           {
             "AuthBearer": []
@@ -570,9 +579,7 @@
             }
           }
         },
-        "tags": [
-          "Usuarios"
-        ],
+        "tags": ["Usuarios"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -620,10 +627,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "items",
-          "count"
-        ],
+        "required": ["items", "count"],
         "title": "PagedProductoSchema",
         "type": "object"
       },
@@ -684,10 +688,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "created_at",
-          "updated_at"
-        ],
+        "required": ["created_at", "updated_at"],
         "title": "ProductoSchema",
         "type": "object"
       },
@@ -712,10 +713,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "nombre",
-          "precio"
-        ],
+        "required": ["nombre", "precio"],
         "title": "ProductoCreateSchema",
         "type": "object"
       },
@@ -776,9 +774,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "token"
-        ],
+        "required": ["token"],
         "title": "TokenSchema",
         "type": "object"
       },
@@ -789,9 +785,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "detail"
-        ],
+        "required": ["detail"],
         "title": "DetailSchema",
         "type": "object"
       },
@@ -806,10 +800,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "nombre",
-          "contraseña"
-        ],
+        "required": ["nombre", "contraseña"],
         "title": "LoginSchema",
         "type": "object"
       }

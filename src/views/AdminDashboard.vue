@@ -1,17 +1,20 @@
 <template>
   <div class="min-h-screen flex flex-col justify-center w-full bg-secondary">
     <div class="mx-auto w-full py-8 px-2 sm:px-6 lg:px-24 gap-6 flex flex-col">
-      <div class="flex justify-start mb-2">
+      <div class="flex flex-col items-center text-center gap-3 mb-4">
         <a
           href="/"
-          class="inline-flex items-center gap-2 bg-muted text-foreground rounded-xl px-4 py-2 font-semibold hover:bg-muted/70 transition-colors"
+          class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/90 px-5 py-2 text-primary font-semibold shadow-sm backdrop-blur hover:-translate-y-0.5 hover:shadow-md transition-all"
         >
-          <span>←</span> Volver a la tienda
+          <span class="text-lg">←</span>
+          <span>Volver a la tienda</span>
         </a>
-      </div>
-      <div class="flex flex-col gap-1">
-        <h1 class="font-display text-2xl font-bold text-foreground">Productos</h1>
-        <p class="text-sm text-muted-foreground">Gestiona tu catálogo de productos desde aquí.</p>
+        <div class="flex flex-col gap-1 items-center">
+          <h1 class="font-display text-3xl font-bold text-foreground">Productos</h1>
+          <p class="text-sm text-muted-foreground max-w-xl">
+            Gestiona tu catálogo de productos desde aquí.
+          </p>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="Total" :value="total" icon="📦" />
@@ -95,9 +98,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide } from 'lucide-vue-next'
+import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide, Search } from 'lucide-vue-next'
 import { API_ENDPOINTS, fetchProductos } from '../api'
-import { productosApiCreateProducto, productosApiUpdateProducto } from '../api/generated'
+import {
+  productosApiCreateProducto,
+  productosApiUpdateProducto,
+  productosApiGetProducto,
+} from '../api/generated'
 import type { ProductosApiCreateProductoBody, ProductosApiUpdateProductoBody } from '../api/schemas'
 
 import ProductTable from '../components/admin/ProductTable.vue'
@@ -200,6 +207,7 @@ const filters = [
     icon: ArrowDownNarrowWide,
     endpoint: API_ENDPOINTS.loMasBarato,
   },
+  { key: 'porId', label: 'Por ID', icon: Search, endpoint: API_ENDPOINTS.obtenerProducto },
 ]
 const activeFilter = ref('todos')
 const productos = ref<ProductoSchema[]>([])
@@ -230,6 +238,36 @@ async function fetchData() {
   error.value = false
   try {
     const currentFilter = filters.find((f) => f.key === activeFilter.value)
+    if (currentFilter?.key === 'porId') {
+      const trimmed = busqueda.value.trim()
+      if (!trimmed) {
+        productos.value = []
+        total.value = 0
+        totalOfertas.value = 0
+        totalMujer.value = 0
+        totalHombre.value = 0
+        return
+      }
+      const id = Number(trimmed)
+      if (Number.isNaN(id)) {
+        productos.value = []
+        total.value = 0
+        totalOfertas.value = 0
+        totalMujer.value = 0
+        totalHombre.value = 0
+        return
+      }
+      const response = await productosApiGetProducto(id)
+      const producto = (response as any)?.data || null
+      const items = producto ? [producto] : []
+      productos.value = items
+      total.value = items.length
+      totalOfertas.value = items.filter((p: any) => p.en_oferta).length
+      totalMujer.value = items.filter((p: any) => p.para_mujer).length
+      totalHombre.value = items.filter((p: any) => !p.para_mujer).length
+      offset.value = 0
+      return
+    }
     let endpoint = ''
     if (busqueda.value) {
       endpoint = `${currentFilter.endpoint}?busqueda=${encodeURIComponent(busqueda.value)}&limit=${PAGE_SIZE}&offset=${offset.value}`

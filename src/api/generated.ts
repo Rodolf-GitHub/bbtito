@@ -321,6 +321,49 @@ export const productosApiListProductosLoMasBarato = async (params?: ProductosApi
 
 
 /**
+ * Endpoint para obtener un producto por su ID.
+ * @summary Get Producto
+ */
+export type productosApiGetProductoResponse200 = {
+  data: ProductoSchema
+  status: 200
+}
+
+export type productosApiGetProductoResponseSuccess = (productosApiGetProductoResponse200) & {
+  headers: Headers;
+};
+;
+
+export type productosApiGetProductoResponse = (productosApiGetProductoResponseSuccess)
+
+export const getProductosApiGetProductoUrl = (productoId: number,) => {
+
+
+  
+
+  return `/api/productos/obtener/${productoId}`
+}
+
+export const productosApiGetProducto = async (productoId: number, options?: RequestInit): Promise<productosApiGetProductoResponse> => {
+  
+  const res = await fetch(getProductosApiGetProductoUrl(productoId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: productosApiGetProductoResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as productosApiGetProductoResponse
+}
+  
+
+
+/**
  * Endpoint para crear un nuevo producto. Requiere autenticación.
  * @summary Create Producto
  */

@@ -93,6 +93,7 @@ const filters = [
   { key: 'mujer', label: 'Mujer' },
   { key: 'recientes', label: 'Lo último' },
   { key: 'baratos', label: 'Lo más económico' },
+  { key: 'porId', label: 'Por ID' },
 ]
 const logoClickCount = ref(0)
 let logoTimeout: any = null
