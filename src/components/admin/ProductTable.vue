@@ -29,7 +29,8 @@
               v-if="p.imagen"
               :src="buildImageUrl(p.imagen)"
               alt="img"
-              class="w-12 h-12 object-cover rounded border"
+              class="w-12 h-12 object-cover rounded border cursor-zoom-in"
+              @click="$emit('imageClick', buildImageUrl(p.imagen), p.nombre || 'Producto')"
             />
             <span v-else class="text-muted-foreground text-xs">Sin imagen</span>
           </td>
@@ -83,7 +84,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { Pencil, Trash2 } from 'lucide-vue-next'
 import { buildImageUrl } from '../../api'
 const { productos } = defineProps<{ productos: any[] }>()
-const emit = defineEmits(['edit', 'delete'])
+const emit = defineEmits(['edit', 'delete', 'imageClick'])
 
 const expanded = ref(false)
 const isDesktop = ref(false)

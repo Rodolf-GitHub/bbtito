@@ -112,9 +112,9 @@
           <button
             type="submit"
             class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold shadow-sm hover:shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed"
-            :disabled="!form.nombre || !form.precio || saving"
+            :disabled="!form.nombre || !form.precio || props.saving"
           >
-            <span v-if="saving" class="inline-flex items-center gap-2">
+            <span v-if="props.saving" class="inline-flex items-center gap-2">
               <span class="spinner" aria-hidden="true"></span>
               {{ isEdit ? 'Guardando...' : 'Creando...' }}
             </span>
@@ -142,9 +142,9 @@ const props = defineProps<{
   open: boolean
   isEdit?: boolean
   producto?: any
+  saving?: boolean
 }>()
 const emit = defineEmits(['close', 'save'])
-const saving = ref(false)
 const form = reactive({
   nombre: '',
   precio: 0,
@@ -173,12 +173,12 @@ function removeImage() {
   if (fileInput.value) fileInput.value.value = ''
 }
 watch(
-  () => props.producto,
-  (val) => {
+  [() => props.producto, () => props.open],
+  ([val, isOpen]) => {
     if (val) {
       Object.assign(form, val)
       imagenPreview.value = val.imagen ? buildImageUrl(val.imagen) : null
-    } else {
+    } else if (!val || !isOpen) {
       form.nombre = ''
       form.precio = 0
       form.imagen = ''
@@ -189,11 +189,9 @@ watch(
   },
   { immediate: true },
 )
-async function onSubmit() {
-  if (saving.value) return
-  saving.value = true
-  await emit('save', { ...form, imagen: imagenPreview.value || form.imagen })
-  saving.value = false
+function onSubmit() {
+  if (props.saving) return
+  emit('save', { ...form, imagen: imagenPreview.value || form.imagen })
 }
 </script>
 

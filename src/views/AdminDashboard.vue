@@ -71,7 +71,12 @@
             <span v-else>No hay productos disponibles con este filtro.</span>
           </div>
           <div v-else>
-            <ProductTable :productos="productos" @edit="openEditModal" @delete="onDelete" />
+            <ProductTable
+              :productos="productos"
+              @edit="openEditModal"
+              @delete="onDelete"
+              @imageClick="openLightboxFromTable"
+            />
           </div>
 
           <div class="pagination">
@@ -87,8 +92,15 @@
             :open="modalOpen"
             :isEdit="!!selectedProduct"
             :producto="selectedProduct"
+            :saving="modalSaving"
             @close="closeModal"
             @save="onSave"
+          />
+          <ImageLightbox
+            v-if="lightbox"
+            :src="lightbox.src"
+            :alt="lightbox.alt"
+            @close="closeLightbox"
           />
         </div>
       </div>
@@ -111,9 +123,12 @@ import type { ProductosApiCreateProductoBody, ProductosApiUpdateProductoBody } f
 import ProductTable from '../components/admin/ProductTable.vue'
 import StatCard from '../components/admin/StatCard.vue'
 import ProductModal from '../components/admin/ProductModal.vue'
+import ImageLightbox from '../components/ImageLightbox.vue'
 // Modal state
 const modalOpen = ref(false)
 const selectedProduct = ref<any | null>(null)
+const modalSaving = ref(false)
+const lightbox = ref<{ src: string; alt: string } | null>(null)
 
 function openCreateModal() {
   selectedProduct.value = null
@@ -126,10 +141,12 @@ function openEditModal(product: any) {
 function closeModal() {
   modalOpen.value = false
   selectedProduct.value = null
+  modalSaving.value = false
 }
 async function onSave(product: any) {
   console.log('onSave ejecutado', product)
   isLoading.value = true
+  modalSaving.value = true
   error.value = false
   try {
     // Convertir imagen base64 a Blob si aplica
@@ -196,6 +213,7 @@ async function onSave(product: any) {
     console.error('Error al crear producto:', e)
   } finally {
     isLoading.value = false
+    modalSaving.value = false
   }
 }
 function onDelete(product: any) {
@@ -221,7 +239,14 @@ function onDelete(product: any) {
     })
 }
 
-import { watch } from 'vue'
+function openLightboxFromTable(src: string, alt: string) {
+  lightbox.value = { src, alt }
+}
+
+function closeLightbox() {
+  lightbox.value = null
+}
+
 import type { ProductoSchema } from '../api/schemas'
 const filters = [
   { key: 'todos', label: 'Todos', icon: ShoppingBag, endpoint: API_ENDPOINTS.listarTodos },
