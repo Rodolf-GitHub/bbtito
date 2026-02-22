@@ -1,8 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import ProductDetail from '../views/ProductDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      }
+    }
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -26,6 +37,11 @@ const router = createRouter({
       path: '/admin',
       name: 'admin-dashboard',
       component: () => import('../views/AdminDashboard.vue'),
+    },
+    {
+      path: '/producto/:id',
+      name: 'product-detail',
+      component: ProductDetail,
     },
   ],
 })

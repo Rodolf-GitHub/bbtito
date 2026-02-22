@@ -59,6 +59,10 @@
               Consultar por WhatsApp
             </button>
             <a class="cta ghost" href="#catalogo">Ver catálogo</a>
+            <button class="cta share" type="button" @click="$emit('share')">
+              <Share2 class="share-icon" />
+              Compartir con tus amigos
+            </button>
           </div>
           <div class="flex gap-8 pt-4 text-sm text-muted-foreground justify-center w-full">
             <div>
@@ -79,13 +83,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SparkleOverlay from './SparkleOverlay.vue'
+import { Share2 } from 'lucide-vue-next'
 const props = defineProps<{
   destacados?: any[]
   totalMujer?: number
   totalHombre?: number
   activeFilter?: string
 }>()
-const emit = defineEmits(['whatsappClick', 'imageClick', 'navFilter'])
+const emit = defineEmits(['whatsappClick', 'imageClick', 'navFilter', 'share'])
 const filters = [
   { key: 'todos', label: 'Catálogo' },
   { key: 'ofertas', label: 'Ofertas' },
@@ -187,6 +192,21 @@ function handleLogoClick() {
 .cta.ghost:hover {
   background: rgba(255, 45, 149, 0.08);
   transform: translateY(-2px);
+}
+.cta.share {
+  background: #fff;
+  color: var(--foreground, #1b1b1f);
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  gap: 0.4rem;
+}
+.cta.share .share-icon {
+  width: 16px;
+  height: 16px;
+}
+.cta.share:hover {
+  transform: translateY(-2px);
+  background: #f9f9fb;
 }
 
 /* Mobile-friendly layout for chips */

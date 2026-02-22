@@ -16,6 +16,7 @@
       @whatsappClick="openWhatsapp"
       @imageClick="openLightbox"
       @navFilter="handleNavFilter"
+      @share="shareSite"
     />
     <section id="catalogo" class="catalog-section">
       <div class="catalog-content">
@@ -28,7 +29,9 @@
               buscas.
             </p>
           </div>
-          <span class="catalog-count">{{ total }} productos</span>
+          <div class="catalog-meta">
+            <span class="catalog-count">{{ total }} productos</span>
+          </div>
         </div>
         <div class="search-bar">
           <input
@@ -109,7 +112,16 @@ import WhatsappSelector from '../components/WhatsappSelector.vue'
 import WhatsappFab from '../components/WhatsappFab.vue'
 import ImageLightbox from '../components/ImageLightbox.vue'
 import { fetchProductos, API_ENDPOINTS } from '../api'
-import { ShoppingBag, Tag, Heart, User, Clock, ArrowDownNarrowWide, Search } from 'lucide-vue-next'
+import {
+  ShoppingBag,
+  Tag,
+  Heart,
+  User,
+  Clock,
+  ArrowDownNarrowWide,
+  Search,
+  Share2,
+} from 'lucide-vue-next'
 import { productosApiGetProducto } from '../api/generated'
 import type { ProductoSchema } from '../api/schemas'
 
@@ -270,6 +282,36 @@ function closeWhatsapp() {
 function onConsultar(producto: any) {
   openWhatsapp(producto)
 }
+
+function copyFallback(url: string) {
+  const input = document.createElement('input')
+  input.value = url
+  document.body.appendChild(input)
+  input.select()
+  document.execCommand('copy')
+  document.body.removeChild(input)
+  alert('Enlace copiado')
+}
+
+async function shareSite() {
+  const url = window.location.origin
+  const title = 'BBTito - Moda que encanta'
+  const text = 'Descubre las últimas prendas en BBTito. ¡Te va a encantar!'
+  try {
+    if (navigator.share) {
+      await navigator.share({ title, text, url })
+      return
+    }
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(url)
+      alert('Enlace copiado')
+      return
+    }
+    copyFallback(url)
+  } catch (e) {
+    copyFallback(url)
+  }
+}
 </script>
 
 <style scoped>
@@ -403,6 +445,12 @@ function onConsultar(producto: any) {
 .catalog-title {
   text-align: center;
 }
+.catalog-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
 .catalog-label {
   color: var(--primary);
   font-size: 0.7rem;
@@ -413,6 +461,41 @@ function onConsultar(producto: any) {
   color: var(--muted-foreground);
   font-size: 0.8rem;
   text-transform: uppercase;
+}
+.share-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border, #e5e5e5);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--foreground);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+.share-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+  background: #f9f9fb;
+}
+.share-icon {
+  width: 16px;
+  height: 16px;
+}
+@media (min-width: 768px) {
+  .catalog-header {
+    flex-direction: row;
+    align-items: center;
+  }
+  .catalog-title {
+    text-align: left;
+  }
 }
 .search-bar {
   margin: 1rem 0;
