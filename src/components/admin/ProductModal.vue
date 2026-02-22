@@ -4,15 +4,26 @@
     class="fixed inset-0 z-50 flex flex-col justify-center items-center min-h-screen bg-black/60 px-2 py-8 sm:px-0 sm:py-0"
   >
     <div
-      class="bg-white rounded-2xl shadow-xl p-4 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto relative"
+      class="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 w-full max-w-xl max-h-[92vh] overflow-y-auto relative border border-border/60"
     >
+      <div class="absolute inset-x-6 top-0 h-1.5 rounded-b-full bg-gradient-to-r from-primary via-pink-400 to-orange-300" />
       <button
-        class="absolute top-4 right-4 text-xl text-muted-foreground hover:text-foreground"
+        class="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 shadow-sm transition"
         @click="$emit('close')"
+        type="button"
+        aria-label="Cerrar"
       >
         ✕
       </button>
-      <h2 class="text-xl font-bold mb-4">{{ isEdit ? 'Editar producto' : 'Crear producto' }}</h2>
+      <div class="mb-6 flex flex-col gap-1 text-center">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary/90">
+          Gestión de catálogo
+        </p>
+        <h2 class="text-2xl font-bold text-foreground">
+          {{ isEdit ? 'Editar producto' : 'Crear producto' }}
+        </h2>
+        <p class="text-sm text-muted-foreground">Completa la información y guarda los cambios.</p>
+      </div>
       <form @submit.prevent="onSubmit" class="flex flex-col gap-6">
         <div class="grid gap-6 md:grid-cols-2">
           <div class="flex flex-col gap-2">
@@ -36,19 +47,31 @@
             />
           </div>
         </div>
-        <div class="flex flex-wrap gap-8">
-          <div class="flex items-center gap-3">
-            <input id="para_mujer" type="checkbox" v-model="form.para_mujer" />
-            <label for="para_mujer" class="text-sm">{{
-              form.para_mujer ? 'Para mujer' : 'Para hombre'
-            }}</label>
-          </div>
-          <div class="flex items-center gap-3">
-            <input id="en_oferta" type="checkbox" v-model="form.en_oferta" />
-            <label for="en_oferta" class="text-sm">{{
-              form.en_oferta ? 'En oferta' : 'Sin oferta'
-            }}</label>
-          </div>
+        <div class="flex flex-wrap gap-3">
+          <button
+            type="button"
+            class="pill"
+            :class="{ active: form.para_mujer }"
+            @click="form.para_mujer = true"
+          >
+            Para mujer
+          </button>
+          <button
+            type="button"
+            class="pill"
+            :class="{ active: !form.para_mujer }"
+            @click="form.para_mujer = false"
+          >
+            Para hombre
+          </button>
+          <button
+            type="button"
+            class="pill"
+            :class="{ active: form.en_oferta }"
+            @click="form.en_oferta = !form.en_oferta"
+          >
+            {{ form.en_oferta ? 'En oferta' : 'Sin oferta' }}
+          </button>
         </div>
         <div class="flex flex-col gap-2">
           <label class="text-sm font-medium">Imagen</label>
@@ -83,17 +106,17 @@
             class="hidden"
           />
         </div>
-        <div class="flex gap-3 mt-4">
+        <div class="flex gap-3 mt-4 flex-wrap">
           <button
             type="submit"
-            class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold"
+            class="bg-primary text-primary-foreground rounded-xl px-8 h-11 font-semibold shadow-sm hover:shadow-md transition"
             :disabled="!form.nombre || !form.precio"
           >
             {{ isEdit ? 'Guardar' : 'Crear' }}
           </button>
           <button
             type="button"
-            class="bg-muted text-muted-foreground rounded-xl px-8 h-11 font-semibold"
+            class="bg-muted text-muted-foreground rounded-xl px-8 h-11 font-semibold hover:bg-muted/80 transition"
             @click="$emit('close')"
           >
             Cancelar
@@ -106,6 +129,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
+import { buildImageUrl } from '../../api'
 const props = defineProps<{
   open: boolean
   isEdit?: boolean
@@ -144,7 +168,7 @@ watch(
   (val) => {
     if (val) {
       Object.assign(form, val)
-      imagenPreview.value = val.imagen || null
+      imagenPreview.value = val.imagen ? buildImageUrl(val.imagen) : null
     } else {
       form.nombre = ''
       form.precio = 0
@@ -162,6 +186,22 @@ function onSubmit() {
 </script>
 
 <style scoped>
+.pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.55rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--card);
+  color: var(--foreground);
+  transition: all 0.2s ease;
+}
+.pill.active {
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--primary, #ff2d95), #ff6fb1);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(255, 45, 149, 0.18);
+}
 .input {
   border: 1px solid var(--border);
   border-radius: 0.75rem;
