@@ -1,7 +1,7 @@
 // api.ts para Vue
 import { getToken } from './lib/auth'
 
-const API_BASE = 'https://api.bbtito.com' // Cambia esto a tu URL real
+export const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000' // Cambia esto a tu URL real
 
 export const API_ENDPOINTS = {
   listarTodos: `${API_BASE}/api/productos/listar_todos`,
