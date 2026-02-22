@@ -3,7 +3,6 @@
     <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-2 text-[11px] uppercase tracking-widest text-primary">
-          <MessageCircle class="h-3.5 w-3.5" />
           <span>Contacto</span>
         </div>
         <h2 class="font-display text-2xl text-foreground sm:text-3xl text-balance">
@@ -19,7 +18,7 @@
           <p
             class="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground"
           >
-            <MessageCircle class="h-3.5 w-3.5" /> WhatsApp
+            WhatsApp
           </p>
           <div class="mt-3 flex flex-col gap-2">
             <a
